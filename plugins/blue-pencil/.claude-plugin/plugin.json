@@ -1,0 +1,7 @@
+{
+  "name": "blue-pencil",
+  "displayName": "Blue Pencil",
+  "description": "Review markdown documents against a spec, revise them until they pass, and write and tune specs: the Blue Pencil MCP server and its skill.",
+  "author": { "name": "Spectacular AI" },
+  "homepage": "https://blue-pencil-nu.vercel.app"
+}

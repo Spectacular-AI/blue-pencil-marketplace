@@ -1,0 +1,12 @@
+{
+  "name": "blue-pencil",
+  "description": "Blue Pencil for Claude Code.",
+  "owner": { "name": "Spectacular AI", "url": "https://github.com/Spectacular-AI" },
+  "plugins": [
+    {
+      "name": "blue-pencil",
+      "source": "./plugins/blue-pencil",
+      "description": "Review markdown documents against a spec, revise them until they pass, and write and tune specs: the Blue Pencil MCP server and its skill."
+    }
+  ]
+}

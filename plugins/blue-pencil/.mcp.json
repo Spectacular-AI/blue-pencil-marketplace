@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "blue-pencil": {
+      "type": "http",
+      "url": "https://blue-pencil-nu.vercel.app/api/mcp"
+    }
+  }
+}
