@@ -179,8 +179,10 @@ that part and everything inside it; at the top, the whole document.
 ## Cascade
 
 A **cascading** rule is asked of the part it is written on and of every part below it, each copy
-reading only its own part's text (the parts inside it carry their own copy), so each piece of text is
-checked once. A rule that does not cascade is asked of its part alone, reading everything inside it.
+reading only its own part's text: the sections, tables, lists and code blocks inside it carry their own
+copy and are left out, so each piece of text is checked once. The top's copy reads the title and the
+text outside every part the spec names (the frontmatter left out); when there is none, it is not asked.
+A rule that does not cascade is asked of its part alone, reading everything inside it.
 
 - `should` and `must_not_use` cascade by default; the other kinds do not. Set it per rule:
   `{text: …, cascade: false}` keeps a `should` on its own part; `{text: …, cascade: true}` passes a rule
@@ -252,11 +254,14 @@ Measured on the review's questions; a spec cannot fix these, only avoid them.
   a code block holds reads a value in code as not stated (.44 to .67); "given as a value in the code" in
   the rule lifts it only to the edge of sure (.80).
 - **The title heading and the lead** (the text under it before the first section) have no part: a spec
-  for many documents cannot name a title that differs in each. A rule about them goes at the top, where
-  it reads the whole document, so a lead that leaves out what the body says still passes: three copies
-  whose lead lost its first sentence, its purpose or its format passed at .50 to .54. Scoping the rule
-  in words ("in the opening paragraph, …"), or cascading it from the top with every section turned off
-  so the top's copy reads only the title and the lead, did not catch them (.61 to .80). For a rule about
+  for many documents cannot name a title that differs in each. A rule written at the top without
+  cascade reads the whole document, so a lead that leaves out what the body says still passes (three
+  copies at .50 to .54); scoping it in words ("in the opening paragraph, …") did not help. To aim a rule
+  at the title and the lead, write it at the top with `cascade: true` and turn it off (`{text, off:
+  true}`) on each part at the top: the top's copy then reads only the title and the text outside the
+  named parts (a claim in the lead: .92 to .96 in the review's own question tests; not yet tried on a
+  whole spec). A tone rule on a short lead of technical words ("This note describes the Orders
+  schema.") reads as jargon (.50 to .69). For a rule about
   the title's form (a noun phrase, not a sentence), no kind was decisive both ways: `must_not_use` and
   `should` gave .39 to .43 on a title written as a sentence and .51 to .70 on right ones, and
   `must_not_say` passed the sentence (.73 to .83). Name such checks in your report as limits.
