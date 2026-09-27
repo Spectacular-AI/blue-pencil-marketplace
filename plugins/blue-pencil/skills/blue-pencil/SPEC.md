@@ -93,11 +93,14 @@ Every part has a `type`, and is found in the document by what identifies it:
   people and teams to call". The review names a part by its heading and its description together, so
   a heading in other words for the same thing ("Changelog", "Revision history") is found, and a close
   heading that means something else ("Field notes" for "Fields") is not. Say only what the part is for,
-  never how good it must be: qualities go in `asserts`.
+  never how good it must be: qualities go in `asserts`. Name nothing in it that only some documents have:
+  a Fields section described "with a subsection per nested type" went unfound in notes without one (.25 to
+  .31). In a document with many tables, say which one ("the first table of fields": .91 to .97, against
+  .63 without).
 - **Describe a list by what each entry is**, not by what the entries point to. Entries that name a
   schema and then say how it relates are relations: "the relations to other schemas, one per entry" is
-  found (.82 to .93), "the related schemas, one per entry" is not (.15 to .55), though it is when each
-  entry is one line. A description that loose also fits another list in the same section; say what each
+  found more often (.68 to .93 over two rounds), "the related schemas, one per entry" is not (.15 to .55),
+  though it is when each entry is one line. A description that loose also fits another list in the same section; say what each
   entry holds in an `every_entry` rule when that matters.
 - **A section at the top of the spec is found anywhere in the document**, under its title heading
   included. `generate_spec` keys the title heading as a section holding the rest; keep that part only
@@ -259,8 +262,9 @@ Measured on the review's questions; a spec cannot fix these, only avoid them.
   copies at .50 to .54); scoping it in words ("in the opening paragraph, …") did not help. To aim a rule
   at the title and the lead, write it at the top with `cascade: true` and turn it off (`{text, off:
   true}`) on each part at the top: the top's copy then reads only the title and the text outside the
-  named parts (a claim in the lead: .92 to .96 in the review's own question tests; not yet tried on a
-  whole spec). A tone rule on a short lead of technical words ("This note describes the Orders
+  named parts (on a whole spec, copies whose lead lost what one record is or its format failed at .11 to
+  .17). It takes one `off` per part per rule; YAML anchors keep them short. Text under a heading the spec
+  does not name is read by the top's copy too. A tone rule on a short lead of technical words ("This note describes the Orders
   schema.") reads as jargon (.50 to .69). For a rule about
   the title's form (a noun phrase, not a sentence), no kind was decisive both ways: `must_not_use` and
   `should` gave .39 to .43 on a title written as a sentence and .51 to .70 on right ones, and
@@ -271,6 +275,13 @@ Measured on the review's questions; a spec cannot fix these, only avoid them.
   underscore are caught.
 - `present` on the frontmatter was unsure (.55 to .79) on two long notes that have it, and on many of
   their copies; the spec has nothing that changes it.
+- **Link syntax** (`[[note]]`, not `[text](file.md)`) is markup, not words: `must_use` of the wanted form
+  was unsure everywhere (.62 to .84), and naming the characters of the unwanted form unsure on right notes
+  (.55 to .79). `must_not_use` of the unwanted form on the list that holds the links failed a copy using
+  it (.09) and stayed unsure on right notes (.48 to .76). Read such a check as unsure.
+- A rule on a frontmatter field reads only that field's value: word it so it stands on the value alone
+  ("a value naming the kind of record", not "what the documented data is"). A field's exact value
+  (`type: data-schema`) is not checked decisively either way (.22 to .97 over four kinds).
 - Length and counts are not checked: the review does not count. A 251-character value passed "a value
   longer than 150 characters" at .59 to .71 over four reviews. Leave such a rule out of the spec.
 - Tone on a part with nothing it applies to (a rule about sentences on a table) passes, at the edge of
