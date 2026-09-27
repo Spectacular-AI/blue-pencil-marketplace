@@ -248,6 +248,9 @@ Measured on the review's questions; a spec cannot fix these, only avoid them.
   saying when to use it, unsure either way.
 - Wording, a pattern: a space in the value and a capital inside it are missed; a leading capital and an
   underscore are caught.
+- A document that writes `message` in backticks, the name the review's questions give the document,
+  pulls its meaning checks down: on two notes, putting another word in its place raised seven of their
+  eight top-level `must_say` values by .2 to .6 (one from .33 to .92). Name such checks in your report.
 - `present` on the frontmatter was unsure (.55 to .79) on two long notes that have it, and on many of
   their copies; the spec has nothing that changes it.
 - Length and counts are not checked: the review does not count. A 251-character value passed "a value
