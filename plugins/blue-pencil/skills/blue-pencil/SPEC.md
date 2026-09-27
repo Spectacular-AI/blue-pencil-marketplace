@@ -246,5 +246,7 @@ Measured on the review's questions; a spec cannot fix these, only avoid them.
   saying when to use it, unsure either way.
 - Wording, a pattern: a space in the value and a capital inside it are missed; a leading capital and an
   underscore are caught.
+- Length and counts are not checked: the review does not count. A 251-character value passed "a value
+  longer than 150 characters" at .59 to .71 over four reviews. Leave such a rule out of the spec.
 - Tone on a part with nothing it applies to (a rule about sentences on a table) passes, at the edge of
   sure.
