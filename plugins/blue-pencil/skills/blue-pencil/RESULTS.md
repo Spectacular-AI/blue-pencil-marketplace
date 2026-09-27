@@ -113,6 +113,15 @@ Act on a decisive value. Review again before acting on a value within 0.10 of 0.
 When the review generated the spec, the YAML ends with it as `spec: |`, with two comment lines showing
 where `title` and `description` go. When you sent a spec, it is not repeated.
 
+## Several documents
+
+`review_files` answers a block per document: a line `# <path>`, then that document's review exactly as
+`review` writes it. Last comes a table, one row per document with `pass`, `checks`, `failed` and
+`unsure` (the unsure counts of its metrics, summed), and a row for all of them. A document whose review
+answered with an error has that error as its block and `error: <code>` in its row; the others are
+reviewed as usual. With `save_to`, each block's review is also written there, as
+`<path without its extension>.review.yaml`, and the table as `table.md`.
+
 ## Errors
 
 `error: {code, message}`, with the tool's error flag set:
@@ -127,3 +136,8 @@ where `title` and `description` go. When you sent a spec, it is not repeated.
 An argument that is missing or of the wrong type (no `format`, a spec sent as an object, not YAML text) is
 refused before the tool runs, with the error flag set and a plain-text message naming the argument: fix
 that argument and call again.
+
+`review_files` and `check_spec_file` refuse a path outside their folder, a missing file and a glob that
+matches nothing before any review, with a plain-text message naming the path: give a path inside the
+folder their descriptions name. "The Blue Pencil server did not answer" means the call never reached a
+review: try once more.
