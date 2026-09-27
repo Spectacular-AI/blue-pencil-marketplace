@@ -20,7 +20,8 @@ Words used throughout:
   is **unsure**: the answers behind it are split. The answers move by up to about 0.10 between identical
   reviews, so an unsure check within 0.10 of 0.5 can flip on a second review.
 
-The server cannot read your files: send the document and the spec as text in each call.
+The server cannot read your files: send the document and the spec as text in each call, with the
+document's `format`, `markdown`, the only format today.
 
 ## Review a document
 

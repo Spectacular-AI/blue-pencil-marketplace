@@ -71,5 +71,6 @@ where `title` and `description` go. When you sent a spec, it is not repeated.
 | `document_too_large` | The document is over the size limit; `limit` and `estimate` are in tokens | Review it in parts |
 | `review_failed` | The review did not finish | Try once more |
 
-An argument of the wrong type (a spec sent as an object, not YAML text) is refused before the tool runs,
-with the error flag set and a plain-text message: send the spec as text.
+An argument that is missing or of the wrong type (no `format`, a spec sent as an object, not YAML text) is
+refused before the tool runs, with the error flag set and a plain-text message naming the argument: fix
+that argument and call again.
