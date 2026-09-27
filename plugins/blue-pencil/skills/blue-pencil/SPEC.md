@@ -179,7 +179,9 @@ checked once. A rule that does not cascade is asked of its part alone, reading e
 
 - `should` and `must_not_use` cascade by default; the other kinds do not. Set it per rule:
   `{text: …, cascade: false}` keeps a `should` on its own part; `{text: …, cascade: true}` passes a rule
-  of another kind down.
+  of another kind down. Each copy is a check: on a spec of fifteen parts, one cascading rule is fifteen
+  checks, so a rule about one feature anywhere in the document ("a markdown link") is one check with
+  `cascade: false`.
 - **Turn a rule off below a part** with `{text: <its text, exactly>, off: true}` of the same kind on
   that part: it is not asked there or in the parts below. In the example, the contact table is spared
   the top's rule about "simply".
