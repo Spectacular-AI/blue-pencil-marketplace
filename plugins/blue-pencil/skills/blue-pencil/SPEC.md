@@ -229,7 +229,10 @@ Measured on the review's questions; a spec cannot fix these, only avoid them.
 - "Comes before" on a part that is absent can still pass; read it beside the part's `present`.
 - `comes: first`, optional parts, a spec with only `forbidden` columns, a document with many tables, and
   large documents are not measured yet.
-- A table's rows are not entries: `every_entry` is for lists.
+- A table's rows are not entries: `every_entry` is for lists, and no assertion asks about every row.
+  `must_not_say` of the breaking row ("a row whose Required cell is something other than yes, no or a
+  condition") failed tables whose rows broke it (.06 to .21 on three copies) but was unsure on one
+  (.43) and passed another (.57); `should` answered "a few lapses" on right tables, unsure there.
 - **The title heading and the lead** (the text under it before the first section) have no part: a spec
   for many documents cannot name a title that differs in each. A rule about them goes at the top, where
   it reads the whole document, so a lead that leaves out what the body says still passes: three copies
