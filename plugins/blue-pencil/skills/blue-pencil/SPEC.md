@@ -1,120 +1,238 @@
 # The spec
 
 A spec is YAML. `check_spec` is its source of truth: it returns the spec in normal form, or the path of
-the field at fault. `catalog` lists everything a spec can name: the question kinds, the packages with
-each option and item, and the answers each kind can give.
+the field at fault. `catalog` lists every assertion with how it is written, the part types it applies
+to and the question the review asks for it, and every package with its options and items.
 
 ```yaml
-title: Release note
-description: An engineer on another team reads it and knows what changed and what they must do.
+title: Service runbook
+description: The engineer on call reads it during an incident and can restore the service without help.
 packages:
   banned_words: {option: default}
-  writing_structure:
-    option: default
-    items: {one-idea-per-bullet: "off"}
 asserts:
-  includes: [the version number and the day it ships]
-sections:
-  what-changed:
-    name: What changed
-    description: the part of `message` that lists the changes a user would notice
+  must_use: ['the service''s name, "payments-api", as it is written in code']
+  must_not_use: ['"simply" or "just" used to make a step sound easy']
+children:
+  frontmatter:
+    type: frontmatter
     present: required
+    children:
+      owner:
+        type: field
+        name: owner
+        present: required
+        asserts:
+          must_say: ["a team's name, not only a person's name"]
+  steps:
+    type: section
+    name: Steps
+    description: the numbered procedure that restores the service
+    present: required
+    comes: {before: rollback}
     asserts:
-      includes: [every change a user would notice]
-      conveys: [which changes break existing setups]
-  upgrade-steps:
-    name: Upgrade steps
-    description: the part of `message` that says how to upgrade
-    present: {rule: optional, when: [the release changes the database schema]}
-    asserts:
-      excludes: [internal ticket numbers]
+      should: ['uses the imperative mood: each step starts with a verb, as in "Restart the worker"']
+    children:
+      step-list:
+        type: list
+        description: the steps, in the order they are done
+        present: required
+        asserts:
+          every_entry: [name one action and the command or screen it uses]
+      restart:
+        type: code
+        description: the command that restarts the service
+        language: bash
+  rollback:
+    type: section
+    name: Rollback
+    description: how to undo the procedure if it makes things worse
+    present: {when: ['it changes data: it writes to, migrates or deletes a stored record']}
+  contacts:
+    type: section
+    name: Contacts
+    description: who to call when the steps do not work
+    comes: last
+    children:
+      contact-table:
+        type: table
+        description: the people and teams to call
+        columns: {required: [name, role, phone], forbidden: [home address]}
+        asserts:
+          must_not_use: [{text: '"simply" or "just" used to make a step sound easy', off: true}]
+  internal-notes:
+    type: section
+    name: Internal notes
+    description: notes meant only for the team that owns the service
+    present: forbidden
 ```
 
 ## The top
 
 - `title`: the kind of document. `description`: the goal. Both are for readers of the spec: the review
   never checks them.
-- `packages`: the writing checks, asked in every section. A package left out is off. Each takes an
-  `option`, and `items` to turn one off (`"off"`, quoted) or to reword it.
-- `asserts`: lines about the whole document.
-- `sections`: the parts of the document, keyed by heading.
+- `packages`: preset rules, each package one kind of rule (below). A package left out is off.
+- `asserts`: rules about the whole document.
+- `children`: the parts of the document, each keyed by a name you choose.
 
-## A section
+## Parts
 
-- **Key**: its heading in lower case, with hyphens for spaces and punctuation (`Next steps` →
-  `next-steps`). Sibling keys must differ.
-- `name`: the heading to look for. Leave it out for a part with no heading; the review then finds the
-  part by its description and always checks it.
-- `description`: where the part is, as a whole phrase starting "the part of `message`": "the part of
-  `message` that says how to upgrade". `message` is how every question names the document, so keep it
-  as written, in backticks. Say only where the part is, never how good it must be: the presence check
-  also asks whether the part does what its description says, so a quality in the description ("one
-  dated entry per change") turns presence into a quality check. When that fails, the section counts as
-  not found, and its own checks are never asked. Put qualities in `asserts` lines.
-- `present`: `required` (missing is a failed check), `optional` (the default; absent is fine), or
-  `{rule: optional, when: [conditions]}` (absent fails when a condition is true of the document). Only
-  a section with a `name` has a presence.
-- `asserts`: lines for this part (below).
-- `packages`: this section's own item overrides, `{<package>: {items: {<item>: "off" | new wording}}}`.
-  The package must be on at the top, and the item must belong to the option chosen there.
-- `sections`: sections inside this one. A section is looked for only when its parent was found.
+Every part has a `type`, and is found in the document by what identifies it:
 
-## Asserts: the three kinds
+| `type` | Is | Found by | Holds |
+|---|---|---|---|
+| `section` | A heading and everything under it | `name`, its heading, **and** `description` | Sections, tables, lists, code blocks |
+| `table` | A table | `description`, inside its parent section | Nothing |
+| `list` | A list | `description`, inside its parent section | Nothing |
+| `code` | A fenced code block | `description`, inside its parent section | Nothing |
+| `frontmatter` | The YAML metadata between `---` fences at the very top | Its type alone; at the top of the spec, once | Fields |
+| `field` | One key of the frontmatter | `name`, the key exactly | Nothing |
 
-| Kind | Asks | Passes when |
-|---|---|---|
-| `includes` | Does the document state this in the section? | Stated in the section, or elsewhere in the document |
-| `conveys` | Does the document state this fact, in the section? | Stated in full, in the section or elsewhere; not contradicted, hedged or partial |
-| `excludes` | Does the document contain this, anywhere? | Not contained anywhere: the section does not narrow it |
+- **Key**: lower case words joined by hyphens (`next-steps`, `step-list`); it names the part in paths.
+  Sibling sections' headings must give different keys.
+- **`description`** says what the part is for, as a noun phrase that completes "a table that is …": "the
+  people and teams to call". The review names a part by its heading and its description together, so
+  a heading in other words for the same thing ("Changelog", "Revision history") is found, and a close
+  heading that means something else ("Field notes" for "Fields") is not. Say only what the part is for,
+  never how good it must be: qualities go in `asserts`.
+- **A section at the top of the spec is found anywhere in the document**, under its title heading
+  included. `generate_spec` keys the title heading as a section holding the rest; keep that part only
+  when a rule is about it. A section the spec puts inside another is found only inside it, at any
+  depth. A table, list or code block counts anywhere inside its parent section, subsections included.
+- **Content in the wrong place is not the part**: a fields table under "Summary" does not give the
+  document a "Fields" section.
+- **A field's key is exact**: `descripton`, `Description` and a `description` nested under another key
+  are not a `description` field; a `description` with an empty value is. Any YAML map between `---`
+  fences at the very top is frontmatter, an empty one included; a sentence or list there, YAML that does
+  not parse, or a fenced block after the title is not.
+- A part's children are looked for only when the part is found.
 
-- `includes` when a topic or a thing must be covered: "the steps to roll back". For a feature of the
-  text's form, such as a link, describe the form exactly: "a link written as [[double brackets]] or as a
-  relative link to a .md file; links to web pages do not count". A loose wording ("links to related
-  notes") gets `partly` answers, and can be credited to a sentence that only talks about links.
-- `conveys` when a claim must be stated in full, not hedged and not contradicted: "the migration takes
-  under a minute".
-- `excludes` for what must not appear: it looks at the whole document, so it belongs at the top unless
-  it reads naturally with one section. To aim it at one part, make the part itself the thing excluded,
-  and name its heading: "a bullet under the Change log heading that names a person". A prefix ("in a
-  change log entry, a person's name") does not narrow it, and "a change log entry" alone also matches
-  look-alikes elsewhere, such as dated source lines at the top. A top-level line can be aimed at the
-  parts before or after a section the same way: "above the change log, …".
+## Container assertions: a part's own fields
 
-**Rules about order or position** ("the change log comes last") suit none of the three as a statement:
-`includes` and `conveys` look for a sentence that says so, and no document says where its own parts sit.
-Write the rule as an `excludes` of the arrangement that breaks it: "below the change log, any heading or
-paragraph that is not a change log entry".
+| Field | Written | On | Checks |
+|---|---|---|---|
+| `present` | `required`, `optional` (the default), `forbidden`, or `{when: [conditions]}` | Every part | Whether the part is there |
+| `comes` | `first`, `last`, or `{before: <sibling section's key>}` | `section` | Where it sits among its siblings |
+| `columns` | `{required: [...], forbidden: [...], only: [...]}` | `table` | Its column headings |
+| `language` | a language's name | `code` | The name after its opening fence |
 
-Write one thing per line, in words a reader could check against the text alone: "the version number and
-the day it ships" rather than "the key details". A list of alternatives passes on its loosest item, so
-list only alternatives each of which would be enough on its own.
+- **`present: {when: [...]}`**: the part is required when any condition holds of the document, and may
+  be there or not when none does. Write a condition as a clause about the document, scoped to what it
+  documents: "it describes a breaking change to the schema it documents", not "a breaking change". Define
+  a term when an instance of it should count: "it changes data: it writes to, migrates or deletes a
+  stored record". A document that says only that the condition does not hold ("no breaking changes")
+  does not meet it.
+- **`comes: last`**: no section at the same heading level or higher comes after it; its own subsections
+  do not count. `before` names a sibling section by its key.
+- **`columns`** match a table's headings in any case, spacing or short form ("Name", "desc",
+  "internal_id"). A value in a row is never a column. `only` means exactly those columns: each present
+  and no other. The three combine, each column a check of its own.
+- **`language`** matches the name after the opening fence, a short name included (`ts`, `TS`,
+  `typescript` for TypeScript). A block with no name, or another name, fails, whatever its content is
+  written in.
 
-The review reads the whole text sent: frontmatter and metadata lines (`> Sources: …`) are part of the
-document and can match a line. It does not see a file's name, so a line about "the note's title" is
-unsure on a note whose title is only its file name.
+## Content rules: `asserts`
 
-## From a goal to asserts
+`asserts` holds rules about a part's text, by kind; each kind a list of rules. On a part, a rule reads
+that part and everything inside it; at the top, the whole document.
 
-The goal says what a reader can do after reading. Each thing they need in order to do it becomes a line:
+| Kind | Checks | Write the rule as | Anti form |
+|---|---|---|---|
+| `must_say` | Meaning: the part states it outright | What must be said, a noun phrase: "what the schema is for" | `must_not_say` |
+| `must_use` | Wording: the writer's own text contains a word or mark | The word with its nuance: '"leverage" used as a verb' | `must_not_use` |
+| `should` | Tone: how all the text reads, graded; one lapse fails | What the text does: "reads plainly, without jargon" | None: the rule's own words carry it |
+| `every_entry` | Every entry of a list, one by one (on a `list` only) | What each entry does, completing "every entry …": "start with a date" | None |
 
-- Goal: "an engineer on another team knows what changed and what they must do."
-- "what changed" → `includes: [every change a user would notice]` in `what-changed`.
-- "what they must do" → a `required` or conditional `upgrade-steps` section, with its own lines.
+- **Meaning is stated outright, in the part it is written on.** Said elsewhere, or only implied, it
+  fails. Put in the rule what must not count when a reader could take it for the thing: "when an agent
+  should use the skill, not only what the skill does"; "a field marked deprecated or to be removed".
+- **Two parts agreeing is one rule, on a part that holds both**: the top, when they are sibling
+  sections, since a rule on a section reads that section alone. Name the comparison in the rule: "each
+  amount the Summary names, with the value the table of fields gives it". As `must_say` it also fails
+  when the Summary names no amount; as `must_not_say` of a mismatch ("an amount in the Summary that
+  differs from the one the table of fields gives") it passes when there is nothing to compare.
+- **Wording names every form and each mark by its character**: '"seamless" in any form, such as
+  "seamlessly"' (otherwise an adverb is not read as its adjective); 'an exclamation mark ("!")'. A word
+  inside code, or in someone else's quoted words, is not the writer's own and does not count; a table
+  cell and a frontmatter value do. A pattern is written as `must_not_use` of what breaks it: "a character
+  that does not belong in a lower-case hyphenated name, such as a capital letter, an underscore or a
+  space".
+- **A tone rule says what it means, with an example when it is grammar**: 'uses the active voice: in
+  each sentence the subject does the action, as in "The worker retries the job"'. A tone rule that breaks
+  on words you can list ("no exclamation marks") is written as `must_not_use`.
+- **An every-entry rule states its boundary**: "consist only of a date and a short description of the
+  change: anything more, even a name, a code, a link or a clause saying why, breaks this". A plain
+  `must_say` about all the entries misses one bad entry among good ones.
+- One thing per rule, in words a reader could check against the text alone. A rule listing
+  alternatives passes when any one of them is met, so list only alternatives each of which is enough on
+  its own, as the instances in a definition are.
+- A rule is its text, or `{text, cascade}`, or `{text, off: true}` (below). The review never sees the
+  file's name, so a rule about it fails; the title heading is text like any other.
+- **Quote a rule that holds a comma** inside `[...]`, or write the list one rule per `- ` line: YAML
+  splits `[a team's name, not only a person's]` into two rules. `check_spec` accepts both, so read the
+  rules it returns.
 
-Every clause gets a line, and every line serves a clause.
+## Cascade
 
-## Paths
+A **cascading** rule is asked of the part it is written on and of every part below it, each copy
+reading only its own part's text (the parts inside it carry their own copy), so each piece of text is
+checked once. A rule that does not cascade is asked of its part alone, reading everything inside it.
 
-A review names a section by its **section path**, the keys from the top joined by dots. In the example,
-`upgrade-steps` sits at `sections.upgrade-steps`; a section `rollback` inside it would have the section
-path `upgrade-steps.rollback` and sit at `sections.upgrade-steps.sections.rollback`. `check_spec` names a
-field by that longer path. A check's key names a field inside its section:
+- `should` and `must_not_use` cascade by default; the other kinds do not. Set it per rule:
+  `{text: …, cascade: false}` keeps a `should` on its own part; `{text: …, cascade: true}` passes a rule
+  of another kind down.
+- **Turn a rule off below a part** with `{text: <its text, exactly>, off: true}` of the same kind on
+  that part: it is not asked there or in the parts below. In the example, the contact table is spared
+  the top's rule about "simply".
+- A rule written again on a part below replaces the copy from above, and its own `cascade` decides
+  whether it goes further.
+- Cascades stop at the frontmatter: a rule reaches a field only when written on it.
+
+## Packages
+
+A package is a preset of rules of one kind (`catalog` shows each package's `kind`): tone packages hold
+`should` rules, banned words `must_not_use`. Its rules are asked as if written in the top's `asserts`,
+so they cascade to every part.
+
+- At the top: `<package>: {option: <option>}`, and `items: {<item>: "off"}` (quoted) to turn an item off
+  or `items: {<item>: <new wording>}` to reword it.
+- On a part: `packages: {<package>: {items: {<item>: "off" | <new wording>}}}` overrides an item there
+  and below. The package must be named at the top, and the item must belong to the option chosen there.
+- Every item is a check on every part: banned words' 44 items on a spec of six parts make over 250
+  checks. Choose a package for what the goal needs, not by default.
+
+## Paths and keys
+
+A review names a part by its **part path**: the keys from the top joined by dots, such as
+`contacts.contact-table`; the whole document is `whole_document`. `check_spec` names a field by its
+longer path through `children`: `children.contacts.children.contact-table.columns`. Within a part, each
+check is named by its key:
 
 | Check key | Field in the spec |
 |---|---|
-| `asserts.includes.0` | the section's `asserts.includes`, first line |
-| `present` | the section's `present` |
-| `present.when` | the section's `present.when`, all its conditions |
-| `<package>.<item>` | `packages.<package>.items.<item>` at the top, or the section's own override |
+| `present` | the part's `present`, `required` or `forbidden` |
+| `present.when` | the part's `present.when`, all its conditions |
+| `comes` | the section's `comes` |
+| `columns.required.<name>`, `columns.forbidden.<name>` | that column in the table's `columns` |
+| `columns.only` | the table's `columns.only` |
+| `language` | the code block's `language` |
+| `asserts.<kind>.<n>` | the part's own `asserts.<kind>`, rule `n` counted from 0 |
+| `<path>.asserts.<kind>.<n>` | a cascaded copy of that rule, written on the part at `<path>` (`whole_document` for the top) |
+| `<package>.<item>` | the package item, chosen at the top or overridden on this part or above |
 
-The whole document's section path is `whole_document`: its checks are the top-level `asserts`.
+## Known limits
+
+Measured on the review's questions; a spec cannot fix these, only avoid them.
+
+- A heading in near-synonyms of the `name` ("Upgrading" for "Migration") is found at 0.43 to 0.49: give
+  `name` the heading writers use.
+- Two sections that fit one part, or two with the same heading, leave the part's checks unsure.
+- "Comes before" on a part that is absent can still pass; read it beside the part's `present`.
+- `comes: first`, optional parts, a spec with only `forbidden` columns, a document with many tables, and
+  large documents are not measured yet.
+- A table's rows are not entries: `every_entry` is for lists.
+- Meaning: a description saying only when not to use a thing ("Not for code review") reads as half of
+  saying when to use it, unsure either way.
+- Wording, a pattern: a space in the value and a capital inside it are missed; a leading capital and an
+  underscore are caught.
+- Tone on a part with nothing it applies to (a rule about sentences on a table) passes, at the edge of
+  sure.

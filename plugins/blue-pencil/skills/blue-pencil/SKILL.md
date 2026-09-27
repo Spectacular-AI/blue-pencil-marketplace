@@ -7,10 +7,12 @@ description: >
 
 # Blue Pencil
 
-Blue Pencil reviews a markdown document against a **spec**: YAML naming the document's sections, what
-each must say, and the writing packages to check. A review returns every **check**: a value from 0 to 1,
-passing at 0.5 or above, named by its key in the spec. The tools come from the `blue-pencil` MCP server:
-`catalog`, `generate_spec` and `check_spec` are free; each `review` is paid.
+Blue Pencil reviews a markdown document against a **spec**: YAML naming the **parts** a document of one
+kind has (sections, tables, lists, code blocks, frontmatter fields), whether each must be there and
+where, and the **rules** the text in each part must follow. A review returns every **check**: a value
+from 0 to 1, passing at 0.5 or above, named by its part's path and its key in the spec. The tools come
+from the `blue-pencil` MCP server: `catalog`, `generate_spec` and `check_spec` are free; each `review` is
+paid.
 
 Words used throughout:
 
@@ -29,41 +31,43 @@ document's `format`, `markdown`, the only format today.
    document's headings and returns it at the end; save it if the document will be reviewed again.
 2. Call `review` with the document and the spec's YAML.
 3. Read the result with [RESULTS.md](RESULTS.md) the first time in a session.
-4. Report the headline (pass, checks, failed), then every failed check and every unsure check: its
-   section path, its key, and what its answers say.
+4. Report the headline (pass, checks, failed), then every failed check and every unsure check: its part
+   path, its key, and what its answers say.
 
-Done when every failed and every unsure check is reported by its section path and key.
+Done when every failed and every unsure check is reported by its part path and key.
 
 ## Revise a document until it passes
 
 1. Review it, as above.
-2. For each failed check, change the document in the part its section path names, as its likeliest
-   answer asks: `missing`, add it; `partly`, complete it; `contained`, take it out; `no section` or a
-   failed presence, add the part or give it the heading the spec names; `mostly against` or
-   `a few lapses`, rewrite the part to follow the item.
+2. For each failed check, change the document in the part its path names, as RESULTS.md's "Acting on a
+   failed check" says for its key and likeliest answer.
 3. Review again with the same spec, and go back to step 2.
-4. When a check fails on text you judge right as written, leave the text and write down the check's key
-   and why the text is right.
+4. When a check fails on text you judge right as written, leave the text and write down the check's
+   part path, key and why the text is right.
 
 Done when a review after your last edit passes every check, or each check still failing is written down
 with why the text is right as written.
 
 ## Write a spec from a goal
 
-Read [SPEC.md](SPEC.md) first.
+Read [SPEC.md](SPEC.md) first, and call `catalog` once.
 
 1. Write the goal as `description`, and the kind of document as `title`.
-2. Split the goal into clauses, each one thing a good document of this kind says or does.
-3. Start the sections from an example document with `generate_spec`, keeping only the sections every
-   document of this kind has; or write them yourself.
-4. Give each clause an `asserts` line, in the section where a reader would look for it, or at the top
-   for the whole document. Make a section `required` when every document of this kind needs it.
+2. Split the goal, and every rule the user gives, into clauses, each one thing a good document of this
+   kind has, says or avoids.
+3. Start the parts from an example document with `generate_spec`, or write them yourself. Keep the parts
+   every document of this kind has, and the parts a clause names: an optional, conditional or forbidden
+   part is a part too.
+4. Give each clause its assertion on the part it is about: one of the part's own fields when the clause
+   is about whether the part is there, where it comes, a table's columns or a code block's language; an
+   `asserts` rule when it is about what the part's text says, which words it uses, how it reads, or what
+   every entry of a list does. A clause about the whole document goes in the top's `asserts`.
 5. Choose packages from `catalog` only where the goal or the writers' house style calls for them, and
    turn off the items that do not fit this kind of document. A package item the known-good documents
    do not follow fails every one of them.
 6. Call `check_spec`; fix the field at the path it names; repeat until it returns the spec.
 
-Done when `check_spec` returns the spec and every clause of the goal has at least one `asserts` line.
+Done when `check_spec` returns the spec and every clause has its assertion on the part it is about.
 
 ## Tune a spec
 

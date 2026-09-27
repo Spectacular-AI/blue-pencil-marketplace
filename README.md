@@ -22,5 +22,6 @@ specs/schema-note.yaml". The skill can also be run directly as `/blue-pencil:blu
   (`https://blue-pencil-nu.vercel.app/api/mcp`); `skills/blue-pencil/` is the skill, and the one place it
   is written.
 
-Each change to the plugin reaches people who update, since the plugin sets no version and Claude Code
-then follows this repo's commits.
+The plugin's version is `version` in `plugins/blue-pencil/.claude-plugin/plugin.json`. Claude Code offers
+an update only when it changes, so raise it in every change to the plugin: the minor number when the
+spec it teaches or the server's answers change, the patch number for wording.
