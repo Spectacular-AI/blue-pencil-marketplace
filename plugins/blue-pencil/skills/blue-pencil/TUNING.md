@@ -21,7 +21,7 @@ together (`contacts.contact-table columns.required.phone`).
 ## The loop
 
 1. **Examples.** Take at least two known-good documents from the user or the task; ask for them when
-   there are none. For each clause of the goal, write at least one known-bad copy, aimed at the check
+   there are none. For each clause of the goal, write one known-bad copy, aimed at the check
    that checks that clause. A clause that no small change breaks ("explains its idea") still gets one:
    replace the part it concerns with text that fails it. If two such copies still pass, stop: the review
    infers the thing from the rest of the document. Count the check as wrong, and name it in your report
@@ -74,5 +74,13 @@ a check that runs into one in your report, rather than tuning against it.
 
 ## Cost
 
-Each `review` is paid. Make every change a pass of the table calls for before reviewing again, rather
-than one change per review. `check_spec` is free: run it after every edit.
+Each `review` is paid, and costs you more than it costs the server: you write the whole document and the
+spec as its arguments, and read back every check. One pass over 47 examples of about 2,300 tokens each,
+with a spec of 1,900, wrote about 200,000 tokens and read back 125,000; five such passes cost far more
+than the reviews. So:
+
+- One known-bad per clause of the goal, not one per check; a second only as step 1 says.
+- Make every change a pass of the table calls for before reviewing again, rather than one change per
+  review.
+- Save each review's answer to a file as soon as it returns; a lost answer is a review paid twice.
+- `check_spec` is free: run it after every edit.
