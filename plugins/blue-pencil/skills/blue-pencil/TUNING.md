@@ -11,7 +11,9 @@ together (`contacts.contact-table columns.required.phone`).
 - **known-bad**: a copy of a known-good document with one change that should fail exactly one check.
   Every other check should come out as it did on the original, except the checks of a part the change
   removes: its status becomes `missing` or `absent`, and its own checks and the parts inside it are no
-  longer listed. A cascaded rule fails in the part whose own text breaks it, not in the parts above.
+  longer listed; and a sibling's `comes: {before: <that part>}` fails too, having nothing to come before
+  (0 to .26 on four of five copies, .54 on the fifth). A cascaded rule fails in the part whose own text
+  breaks it, not in the parts above.
 - **Adapt the known-good documents to every rule of the goal.** Examples written elsewhere rarely meet all
   of it; add what the goal requires (a section, links to related documents) to your copies, or they test
   the spec against the wrong target.
