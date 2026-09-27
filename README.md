@@ -18,10 +18,11 @@ specs/schema-note.yaml". The skill can also be run directly as `/blue-pencil:blu
 ## What is here
 
 - `.claude-plugin/marketplace.json`: the marketplace, named `blue-pencil`.
-- `plugins/blue-pencil/`: the plugin. `.mcp.json` points at the hosted server
-  (`https://blue-pencil-nu.vercel.app/api/mcp`); `skills/blue-pencil/` is the skill, and the one place it
-  is written.
+- `plugins/blue-pencil/`: the plugin. `.mcp.json` names two servers: the hosted one
+  (`https://blue-pencil-nu.vercel.app/api/mcp`), and `blue-pencil-files`, a local server that reviews
+  files on disk through the hosted one's tools (`server/`, whose README says how to rebuild it);
+  `skills/blue-pencil/` is the skill, and the one place it is written.
 
 The plugin's version is `version` in `plugins/blue-pencil/.claude-plugin/plugin.json`. Claude Code offers
 an update only when it changes, so raise it in every change to the plugin: the minor number when the
-spec it teaches or the server's answers change, the patch number for wording.
+spec it teaches, the servers' tools or their answers change, the patch number for wording.
