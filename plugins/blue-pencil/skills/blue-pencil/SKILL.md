@@ -10,7 +10,8 @@ description: >
 Blue Pencil reviews a markdown document against a **spec**: YAML naming the **parts** a document of one
 kind has (sections, tables, lists, code blocks, frontmatter fields), whether each must be there and
 where, and the **rules** the text in each part must follow. A review returns every **check**: a value
-from 0 to 1, passing at 0.5 or above, named by its part's path and its key in the spec. The tools come
+from 0 to 1, passing at 0.5 or above (shown rounded to two places, so a check shown at 0.5 can be
+listed as failed), named by its part's path and its key in the spec. The tools come
 from the `blue-pencil` MCP server: `catalog`, `generate_spec` and `check_spec` are free; each `review` is
 paid. The `blue-pencil-files` server gives the same `review` and `check_spec` for files on disk:
 `review_files` and `check_spec_file`.

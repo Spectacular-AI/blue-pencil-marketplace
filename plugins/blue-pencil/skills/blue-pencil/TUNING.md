@@ -37,7 +37,8 @@ together (`contacts.contact-table columns.required.phone`).
    (`reviews/pass-1`), where it writes each review as it returns and the table last. Save an example
    that is not a file yet as one first.
 4. **Table.** `review_files`' table gives each example's checks, failed and unsure; start from it to see
-   which examples to read. Then per example, per check, from its saved review: expected, value, decisive
+   which examples to read. Over many examples its answer is too long to read whole: read each review from
+   the `save_to` folder instead. Then per example, per check, from its saved review: expected, value, decisive
    or not, right or not. Then the share of the listed checks that are both decisive and right (a missing
    part's own checks are not listed, so they are not counted).
 5. **Change** the spec for each check that is unsure or wrong, by its cause (below). Record each change:

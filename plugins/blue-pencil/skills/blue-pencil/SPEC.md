@@ -94,6 +94,11 @@ Every part has a `type`, and is found in the document by what identifies it:
   a heading in other words for the same thing ("Changelog", "Revision history") is found, and a close
   heading that means something else ("Field notes" for "Fields") is not. Say only what the part is for,
   never how good it must be: qualities go in `asserts`.
+- **Describe a list by what each entry is**, not by what the entries point to. Entries that name a
+  schema and then say how it relates are relations: "the relations to other schemas, one per entry" is
+  found (.82 to .93), "the related schemas, one per entry" is not (.15 to .55), though it is when each
+  entry is one line. A description that loose also fits another list in the same section; say what each
+  entry holds in an `every_entry` rule when that matters.
 - **A section at the top of the spec is found anywhere in the document**, under its title heading
   included. `generate_spec` keys the title heading as a section holding the rest; keep that part only
   when a rule is about it. A section the spec puts inside another is found only inside it, at any
@@ -229,12 +234,23 @@ Measured on the review's questions; a spec cannot fix these, only avoid them.
   `name` the heading writers use.
 - Two sections that fit one part, or two with the same heading, leave the part's checks unsure.
 - "Comes before" on a part that is absent can still pass; read it beside the part's `present`.
-- `comes: first`, optional parts, a spec with only `forbidden` columns, a document with many tables, and
-  large documents are not measured yet.
-- A table's rows are not entries: `every_entry` is for lists, and no assertion asks about every row.
-  `must_not_say` of the breaking row ("a row whose Required cell is something other than yes, no or a
-  condition") failed tables whose rows broke it (.06 to .21 on three copies) but was unsure on one
-  (.43) and passed another (.57); `should` answered "a few lapses" on right tables, unsure there.
+- `comes: first`, a spec with only `forbidden` columns, a document with many tables, an optional part's
+  own rules, and large documents are not measured yet.
+- An optional part that is absent reports nothing, and one found by mistake has its rules checked
+  against text the document lacks: neither shows as a failed check. An optional section is found when
+  its `description` fits what it holds ("worked examples" over one sentence: .66 to .68).
+- A table's rows are not entries: `every_entry` is for lists, and no assertion asks decisively about
+  every row. Asked of each row, measured on field tables: a cell rule ("the Required cell is yes, no, or
+  a condition") let "sometimes", "always" and "maybe" through (.21 to .46); a unit rule for the rows that
+  measure something sat near .5; a mark in one column (field names in backticks) caught a whole bad
+  table but missed one bad row among 20 (.43 to .51). As `must_not_say` of the breaking row they were
+  unsure too (.36 to .71). Keep such rules out of a spec that must be decisive, or read their checks as
+  unsure.
+- A code block holds no writer's own text: `must_not_use` and `should` on a code block always pass,
+  and `must_use` fails, so a wording rule cannot ban a word inside code (the same word in the prose
+  around the block can still pull a `must_use` toward passing: .62 to .68). A `must_say` about what
+  a code block holds reads a value in code as not stated (.44 to .67); "given as a value in the code" in
+  the rule lifts it only to the edge of sure (.80).
 - **The title heading and the lead** (the text under it before the first section) have no part: a spec
   for many documents cannot name a title that differs in each. A rule about them goes at the top, where
   it reads the whole document, so a lead that leaves out what the body says still passes: three copies
