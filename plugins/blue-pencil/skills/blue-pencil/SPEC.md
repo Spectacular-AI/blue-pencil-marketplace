@@ -230,6 +230,15 @@ Measured on the review's questions; a spec cannot fix these, only avoid them.
 - `comes: first`, optional parts, a spec with only `forbidden` columns, a document with many tables, and
   large documents are not measured yet.
 - A table's rows are not entries: `every_entry` is for lists.
+- **The title heading and the lead** (the text under it before the first section) have no part: a spec
+  for many documents cannot name a title that differs in each. A rule about them goes at the top, where
+  it reads the whole document, so a lead that leaves out what the body says still passes: three copies
+  whose lead lost its first sentence, its purpose or its format passed at .50 to .54. Scoping the rule
+  in words ("in the opening paragraph, …"), or cascading it from the top with every section turned off
+  so the top's copy reads only the title and the lead, did not catch them (.61 to .80). For a rule about
+  the title's form (a noun phrase, not a sentence), no kind was decisive both ways: `must_not_use` and
+  `should` gave .39 to .43 on a title written as a sentence and .51 to .70 on right ones, and
+  `must_not_say` passed the sentence (.73 to .83). Name such checks in your report as limits.
 - Meaning: a description saying only when not to use a thing ("Not for code review") reads as half of
   saying when to use it, unsure either way.
 - Wording, a pattern: a space in the value and a capital inside it are missed; a leading capital and an

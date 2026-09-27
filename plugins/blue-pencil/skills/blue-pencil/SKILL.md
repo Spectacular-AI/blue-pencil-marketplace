@@ -61,7 +61,8 @@ Read [SPEC.md](SPEC.md) first, and call `catalog` once.
 4. Give each clause its assertion on the part it is about: one of the part's own fields when the clause
    is about whether the part is there, where it comes, a table's columns or a code block's language; an
    `asserts` rule when it is about what the part's text says, which words it uses, how it reads, or what
-   every entry of a list does. A clause about the whole document goes in the top's `asserts`.
+   every entry of a list does. A clause about the whole document goes in the top's `asserts`, and so
+   does one about the title or the lead, with the limit SPEC.md's "Known limits" gives.
 5. Choose packages from `catalog` only where the goal or the writers' house style calls for them, and
    turn off the items that do not fit this kind of document. A package item the known-good documents
    do not follow fails every one of them.
