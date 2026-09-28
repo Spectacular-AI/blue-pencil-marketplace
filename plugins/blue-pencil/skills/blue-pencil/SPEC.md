@@ -173,7 +173,12 @@ that part and everything inside it; at the top, the whole document.
 - One thing per rule, in words a reader could check against the text alone. A rule listing
   alternatives passes when any one of them is met, so list only alternatives each of which is enough on
   its own, as the instances in a definition are.
-- A rule is its text, or `{text, cascade}`, or `{text, off: true}` (below). The review never sees the
+- A rule is its text, or `{text, cascade}`, or `{text, weight}`, or `{text, off: true}` (below); `cascade`
+  and `weight` combine. `weight` is a number above 0, 1 unless written: it weights the rule's checks in the
+  document score, the weighted mean of every check's value. Only a content rule has one; presence, order,
+  columns, language and package items weigh 1. A cascaded copy carries its rule's weight, and a rule
+  written again below replaces it. Keep every weight at 1 until the spec is tuned: a weight changes the
+  score, never whether a check passes. The review never sees the
   file's name, so a rule about it fails; the title heading is text like any other.
 - **Quote a rule that holds a comma** inside `[...]`, or write the list one rule per `- ` line: YAML
   splits `[a team's name, not only a person's]` into two rules. `check_spec` accepts both, so read the
@@ -209,7 +214,7 @@ so they cascade to every part.
   or `items: {<item>: <new wording>}` to reword it.
 - On a part: `packages: {<package>: {items: {<item>: "off" | <new wording>}}}` overrides an item there
   and below. The package must be named at the top, and the item must belong to the option chosen there.
-- Every item is a check on every part: banned words' 44 items on a spec of six parts make over 250
+- Every item is a check on every part: banned words' 45 items on a spec of six parts make over 250
   checks. Choose a package for what the goal needs, not by default.
 
 ## Paths and keys

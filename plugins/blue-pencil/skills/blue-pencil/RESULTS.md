@@ -5,7 +5,7 @@ key in the spec ([SPEC.md](SPEC.md), "Paths and keys"). An excerpt of a review a
 spec, every failed check shown and some passed ones left out:
 
 ```yaml
-review: {pass: false, checks: 23, failed: 5, ms: 1840}
+review: {pass: false, score: 0.71, checks: 23, failed: 5, ms: 1840}
 metrics:  # score; bands: sure_fail < 0.2 <= unsure <= 0.8 < sure_pass
   parts: {score: 0.74, failed: 2, sure_fail: 2, unsure: 0, sure_pass: 6}
   meaning: {score: 0.61, failed: 1, sure_fail: 0, unsure: 2, sure_pass: 2}
@@ -47,9 +47,11 @@ parts:  # by spec path; each check by its spec key, a cascaded copy after the pa
 
 ## The headline and metrics
 
-- `review`: whether every check passed, how many checks ran, how many failed, how long it took.
+- `review`: whether every check passed; `score`, the document score, the mean of every check's value,
+  each weighted by its rule's `weight` in the spec (1 unless written; [SPEC.md](SPEC.md)); how many checks
+  ran, how many failed, how long it took. A review with no checks scores 1.
 - `metrics`: one line per kind of check (`parts` for the container assertions, `meaning`, `wording`,
-  `tone`): its mean value, how many failed, and how many were decisive fails (`sure_fail`), unsure, and
+  `tone`): its mean value, weighted as the document score is, how many failed, and how many were decisive fails (`sure_fail`), unsure, and
   decisive passes (`sure_pass`).
 
 ## A check's line
