@@ -1,8 +1,9 @@
 # Blue Pencil for Claude Code
 
 A Claude Code plugin marketplace with one plugin, `blue-pencil`: the Blue Pencil MCP server, which reviews
-markdown documents against a spec, and the skill that teaches an agent to use it (review a document,
-revise it until it passes, write a spec from a goal, tune a spec against examples).
+markdown documents against a spec, and two skills that teach an agent to use it: `blue-pencil-spec`
+works out with you what a good document of yours is and writes it as a spec, and tunes a spec;
+`blue-pencil-review` reviews a document against its spec and revises it until it passes.
 
 ```bash
 claude plugin marketplace add Spectacular-AI/blue-pencil-marketplace
@@ -12,8 +13,9 @@ claude plugin install blue-pencil@blue-pencil
 In the Claude desktop app, add the marketplace `Spectacular-AI/blue-pencil-marketplace` from the plugin
 browser, then install `blue-pencil`.
 
-Then ask your agent, for example: "Use the blue-pencil skill to review docs/fields.md against
-specs/schema-note.yaml". The skill can also be run directly as `/blue-pencil:blue-pencil`.
+Then ask your agent, for example: "This email reads sloppy. Help me make it less sloppy", or "Review
+docs/fields.md against specs/schema-note.yaml". The skills can also be run directly, as
+`/blue-pencil:blue-pencil-spec` and `/blue-pencil:blue-pencil-review`.
 
 ## What is here
 
@@ -22,7 +24,9 @@ specs/schema-note.yaml". The skill can also be run directly as `/blue-pencil:blu
   (`https://slop-or-not.ai/api/mcp`), which signs the user in through the browser.
   `server/` is `blue-pencil-files`, a local server that reviews files on disk through the hosted one's
   tools; the plugin does not start it since 0.6.0 (Drew, 2026-09-28), and its README says how to
-  rebuild it. `skills/blue-pencil/` is the skill, and the one place it is written.
+  rebuild it. `skills/blue-pencil-spec/` and `skills/blue-pencil-review/` are the skills, and the one
+  place they are written; each file is kept in one of the two folders and the other links to it.
+  `INSTALL.md` is for a person setting the plugin up.
 
 The plugin's version is `version` in `plugins/blue-pencil/.claude-plugin/plugin.json`. Claude Code offers
 an update only when it changes, so raise it in every change to the plugin: the minor number when the

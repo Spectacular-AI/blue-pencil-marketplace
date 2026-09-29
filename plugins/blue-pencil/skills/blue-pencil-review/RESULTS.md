@@ -1,7 +1,7 @@
 # Reading a review
 
 A review is YAML: a headline, a score per metric, then every part by its part path, each check by its
-key in the spec ([SPEC.md](SPEC.md), "Paths and keys"). An excerpt of a review against SPEC.md's example
+key in the spec ([SPEC.md](../blue-pencil-spec/SPEC.md), "Paths and keys"). An excerpt of a review against SPEC.md's example
 spec, every failed check shown and some passed ones left out:
 
 ```yaml
@@ -48,7 +48,7 @@ parts:  # by spec path; each check by its spec key, a cascaded copy after the pa
 ## The headline and metrics
 
 - `review`: whether every check passed; `score`, the document score, the mean of every check's value,
-  each weighted by its rule's `weight` in the spec (1 unless written; [SPEC.md](SPEC.md)); how many checks
+  each weighted by its rule's `weight` in the spec (1 unless written; [SPEC.md](../blue-pencil-spec/SPEC.md)); how many checks
   ran, how many failed, how long it took. A review with no checks scores 1.
 - `metrics`: one line per kind of check (`parts` for the container assertions, `meaning`, `wording`,
   `tone`): its mean value, weighted as the document score is, how many failed, and how many were decisive fails (`sure_fail`), unsure, and
@@ -121,7 +121,7 @@ where `title` and `description` go. When you sent a spec, it is not repeated.
 
 | Code | Means | Do |
 |---|---|---|
-| `plan_required` | A spec was sent on Basic, whose reviews use the generated spec | Review without a spec, or tell the user that their own spec needs Premium |
+| `plan_required` | A spec was sent on Basic, whose reviews use the generated spec | "When the plan refuses", below |
 | `spec_invalid` | A field of the spec is wrong; `path` names it | Fix that field; `check_spec` finds these for free |
 | `request_invalid` | The call itself is malformed; `path` may name the argument | Fix the call |
 | `document_too_large` | The document is over the size limit; `limit` and `estimate` are in tokens | Review it in parts |
@@ -130,3 +130,15 @@ where `title` and `description` go. When you sent a spec, it is not repeated.
 An argument that is missing or of the wrong type (no `format`, a spec sent as an object, not YAML text) is
 refused before the tool runs, with the error flag set and a plain-text message naming the argument: fix
 that argument and call again.
+
+## When the plan refuses
+
+The user's plan decides the tools. On **Basic** the server offers `review` alone, against the spec it
+generates from the document's headings; `catalog`, `generate_spec` and `check_spec` are not offered, and
+a spec sent to `review` is refused with `plan_required`. Their own rules need **Premium**, or a team
+on Team Premium.
+
+1. Tell the user what you could not do, in their words, and that Premium adds it:
+   https://slop-or-not.ai/pricing
+2. Go on with what the plan allows: a review without a spec, for a document that has headings.
+3. Keep any rules the two of you settled in a file, ready for when they upgrade.
