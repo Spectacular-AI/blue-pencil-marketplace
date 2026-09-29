@@ -33,18 +33,16 @@ together (`contacts.contact-table columns.required.phone`).
 2. **Expected.** In one file beside the examples, not inside them, write down for each example which
    checks should fail: none on a known-good; the aimed check on a known-bad. A label inside a document
    is sent with it and tells the review the answer.
-3. **Review** every example with the same spec, as files: one `review_files` call with the spec's path,
-   the example folders' globs (`good/*.md`, `bad/*.md`), and `save_to` a folder for this pass
-   (`reviews/pass-1`), where it writes each review as it returns and the table last. Save an example
-   that is not a file yet as one first.
-4. **Table.** `review_files`' table gives each example's checks, failed and unsure; start from it to see
-   which examples to read. Over many examples its answer is too long to read whole: read each review from
-   the `save_to` folder instead. Then per example, per check, from its saved review: expected, value, decisive
+3. **Review** every example with the same spec: one `review` call per example, with its text and the
+   spec's text. Save each answer to a file in a folder for this pass (`reviews/pass-1`) as it returns.
+4. **Table.** From each saved review's headline and metrics, list each example's checks, failed and
+   unsure; start from it to see which examples to read. Then per example, per check, from its saved
+   review: expected, value, decisive
    or not, right or not. Then the share of the listed checks that are both decisive and right (a missing
    part's own checks are not listed, so they are not counted).
 5. **Change** the spec for each check that is unsure or wrong, by its cause (below). Record each change:
    what changed, why, and the values before and after.
-6. **Review again** every example, into a new `save_to` folder, since a change can move checks on
+6. **Review again** every example, into a new folder, since a change can move checks on
    documents it was not aimed at, and go back to step 4.
 
 **Done** when every check is decisive and right on every example; or when two passes in a row each raise
@@ -83,10 +81,10 @@ a check that runs into one in your report, rather than tuning against it.
 Each review is paid, and costs you more than it costs the server. Through `review`, you write the whole
 document and the spec as its arguments: one pass over 47 examples of about 2,300 tokens each, with a
 spec of 1,900, wrote about 200,000 tokens and read back 125,000, and five such passes cost far more than
-the reviews. `review_files` sends the text for you, so a pass costs what you read back. So:
+the reviews. So:
 
-- Review examples as files, with `review_files` and `save_to`: a lost answer is a review paid twice.
+- Save every answer to a file as it returns: a lost answer is a review paid twice.
 - One known-bad per clause of the goal, not one per check; a second only as step 1 says.
 - Make every change a pass of the table calls for before reviewing again, rather than one change per
   review.
-- `check_spec_file` is free: run it after every edit.
+- `check_spec` is free: run it after every edit.

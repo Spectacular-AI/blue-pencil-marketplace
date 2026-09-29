@@ -1,5 +1,9 @@
 # blue-pencil-files
 
+**Switched off** (Drew, 2026-09-28): the plugin's `.mcp.json` does not start this server since 0.6.0,
+when the hosted server began to require sign-in, which this server does not do yet. The code is kept
+to switch back on: it would need OAuth sign-in of its own first.
+
 The plugin's local MCP server (stdio): Blue Pencil's `review` and `check_spec` over files on disk, so an
 agent names a document by its path instead of writing its whole text into a tool call. Writing the text
 was most of what tuning a spec cost: in the first end test, the worker's arguments to `review`, not the
