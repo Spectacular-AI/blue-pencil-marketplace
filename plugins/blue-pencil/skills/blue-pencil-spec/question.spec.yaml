@@ -1,8 +1,11 @@
-# A good question to the user, in up to three short sections under H4 headings that say something of
-# their own. "Where we are:" and "What I noticed:" start their headings, followed by the agent's own
-# words; the question's heading is free, ideally the question itself. Without the starting words, 2 of 4
-# "Where we are" headings and 1 of 3 "What I noticed" headings were found; with them, all 11 in 6 good
-# messages (Drew, 2026-09-29). Write each question toward this spec; review the session's first two
+# A good question to the user (Drew, 2026-09-29). A new question has up to three short sections under
+# H4 headings that say something of their own: "Where we are: …", "What I noticed: …" (left out of a
+# go-ahead) and the question, usually as its own heading. A quick follow-up on the user's last answer is
+# one section, "Quick question: …" or "Quick questions: …", in prose or as a short list, and needs none
+# of the others. Tested on 15 messages, each reviewed twice (7 good, 8 bad): which kind a message is,
+# and which sections it needs, came out right every time (.96 to .99 when a section is not needed, .06
+# to .14 when it is missing). Not checked: a follow-up question on another matter than the user's
+# answer (.48 to .50 either way). Write each question toward this spec; review the session's first two
 # against it before sending them.
 title: A question to the user
 description: >-
@@ -20,10 +23,8 @@ asserts:
   must_not_use:
     - 'a score or probability written as a number, such as "0.46" or "(0.35)"'
     - '"spec", "assertion", "package", "cascade" or "part path" as the names of the tool''s own things, or a rule kind written as code, such as "must_say"'
-  must_not_say:
-    - 'a second question the user must also answer, separate from the first; one question offering two answers to choose between is a single question'
   should:
-    - {text: "reads as one colleague writing to another: the agent writes as 'I' or 'we' to the user as 'you'", cascade: false}
+    - {text: "reads as one colleague writing to another: the agent writes to the user as 'you', and of itself, when it speaks of itself, as 'I' or 'we'", cascade: false}
     # Length is not checked (SPEC.md, "Known limits"); what can be checked is that nothing is said twice.
     - {text: 'says each point once: no sentence repeats what an earlier sentence or section already said', cascade: false}
 children:
@@ -33,8 +34,13 @@ children:
     description: >-
       the opening section, on where the work stands; its heading starts "Where we are:" and goes on in a
       few words of the agent's own, such as "Where we are: nearly there"
-    present: required
+    present:
+      when:
+        - 'it is a new question: none of the headings in the message starts "Quick question:" or "Quick questions:"'
     comes: {before: question}
+    packages:
+      # It restates the user's latest message on purpose, which the "bottom-line" item counts against it.
+      banned_words: {items: {bottom-line: "off"}}
     asserts:
       must_say:
         - "what the work is for: the goal the agent and the user are working towards, in the agent's own words"
@@ -49,7 +55,7 @@ children:
       proposal asks others for cost"
     present:
       when:
-        - "the question asks about the document's content or about what the user wants from it, not for a go-ahead to take the next step"
+        - 'it is a new question (none of the headings in the message starts "Quick question:" or "Quick questions:"), and it asks about the document''s content or about what the user wants from it rather than for a go-ahead to take the next step'
     comes: {before: question}
     asserts:
       must_say:
@@ -59,15 +65,41 @@ children:
     type: section
     name: The question
     description: >-
-      the closing section, which puts one question to the user; its heading is the question itself, or
-      names its subject, such as "Does every one-pager need them?"
-    present: required
+      the last section of a message that opens with where the work stands; it puts one question to the
+      user, usually as its heading
+    present:
+      when:
+        - 'it is a new question: none of the headings in the message starts "Quick question:" or "Quick questions:"'
     packages:
       # In this section an offer to take the next step is the question itself.
       banned_words: {items: {closing-offer: "off"}}
     asserts:
+      must_not_say:
+        - 'a second question the user must also answer, separate from the first; one question offering two answers to choose between is a single question'
       must_say:
         - 'a question put to the user, in the heading or the text'
-        - 'what the answer will change: what the agent will do or write differently depending on the answer'
+        - 'what each possible answer would change: what the agent will do or write differently for each'
       should:
         - 'asks something the user can answer in a sentence from what they know about their document and its readers, without learning how the tool works'
+  quick-question:
+    type: section
+    name: Quick question
+    description: >-
+      a short follow-up on the user's last answer before the agent moves on, as one question in prose or
+      a short list of questions; its heading starts "Quick question:" or "Quick questions:"
+    packages:
+      # The heading is short and the questions are brief; fragments in them are not a fault here. It
+      # restates the user's answer on purpose, which the "bottom-line" item counts against it.
+      tone_and_language: {items: {full-sentences: "off"}}
+      banned_words: {items: {bottom-line: "off"}}
+    asserts:
+      must_say:
+        - "what the user said in their last answer, in their words or the agent's, as in \"You said …\""
+        - 'what the answers will change, such as what the rules will cover or what the agent will do next'
+    children:
+      question-list:
+        type: list
+        description: the follow-up questions, one per entry
+        asserts:
+          every_entry:
+            - 'ask one short question: a second question in the same entry breaks this'

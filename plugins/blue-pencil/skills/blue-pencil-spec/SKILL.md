@@ -32,8 +32,9 @@ your notes and files. They see their document, what you noticed in it, and your 
 ## Talking with the user
 
 Every message that asks the user something, the first one included, is written toward
-[question.spec.yaml](question.spec.yaml), a spec for a good question. It has up to three short
-sections under H4 headings. A heading is a chance to say something, so the body need not repeat it:
+[question.spec.yaml](question.spec.yaml), a spec for a good question. A heading is a chance to say
+something, so the body need not repeat it. A **new question** has up to three short sections under H4
+headings:
 
 - **`#### Where we are: …`**, the heading going on in your own words ("Where we are: nearly there"):
   what the work is for, how far it has got, and what you understood from the user's latest message
@@ -42,8 +43,14 @@ sections under H4 headings. A heading is a chance to say something, so the body 
   for cost"): what raised the question, with something concrete to react to: their own words quoted, a
   small example, or two versions side by side. Leave it out when the question only asks for a go-ahead
   to take the next step;
-- **the question**, under a heading that is the question itself, or names its subject: one question,
-  and what their answer will change.
+- **the question**, usually as its own heading, in words specific to their document ("Should a
+  one-pager that asks only for a first meeting still say what it will cost?"): one question, and what
+  each possible answer would change.
+
+A **quick follow-up** clarifies the user's last answer before you move on, and needs none of that: one
+section, `#### Quick question: …` with the question in prose, or `#### Quick questions: …` with a short
+list, saying what they said ("You said …") and what the answers will change. Keep every question in it
+on that answer; the review cannot tell a stray one, so a new subject is a new question.
 
 Write as one colleague to another, in a professional tone, in full sentences, naming each thing in full,
 each section a sentence or two.
