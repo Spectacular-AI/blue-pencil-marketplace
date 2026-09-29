@@ -19,7 +19,7 @@ specs/schema-note.yaml". The skill can also be run directly as `/blue-pencil:blu
 
 - `.claude-plugin/marketplace.json`: the marketplace, named `blue-pencil`.
 - `plugins/blue-pencil/`: the plugin. `.mcp.json` names the hosted server
-  (`https://blue-pencil-nu.vercel.app/api/mcp`), which signs the user in through the browser.
+  (`https://slop-or-not.ai/api/mcp`), which signs the user in through the browser.
   `server/` is `blue-pencil-files`, a local server that reviews files on disk through the hosted one's
   tools; the plugin does not start it since 0.6.0 (Drew, 2026-09-28), and its README says how to
   rebuild it. `skills/blue-pencil/` is the skill, and the one place it is written.
