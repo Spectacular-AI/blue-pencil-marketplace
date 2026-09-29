@@ -15,7 +15,8 @@ second review. The `review` tool comes from the Blue Pencil MCP server, and each
 it refuses for the user's plan, follow "When the plan refuses" in [RESULTS.md](RESULTS.md).
 
 Every message to the user follows [WORDS.md](../blue-pencil-spec/WORDS.md): their words, never the
-tool's.
+tool's. A question to the user is written toward
+[question.spec.yaml](../blue-pencil-spec/question.spec.yaml).
 
 ## 1. Find the spec
 

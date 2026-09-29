@@ -1,0 +1,106 @@
+# A good question to the user (Drew, 2026-09-29). A new question has up to three short sections under
+# H4 headings that say something of their own: "Where we are: …", "What I noticed: …" (left out of a
+# go-ahead) and the question, usually as its own heading. A quick follow-up on the user's last answer is
+# one section, "Quick question: …" or "Quick questions: …", in prose or as a short list, and needs none
+# of the others. Tested on 15 messages, each reviewed twice (7 good, 8 bad): which kind a message is,
+# and which sections it needs, came out right every time (.96 to .99 when a section is not needed, .06
+# to .14 when it is missing). Not checked: a follow-up question on another matter than the user's
+# answer (.48 to .50 either way). Write each question toward this spec; review the session's first two
+# against it before sending them.
+title: A question to the user
+description: >-
+  One message an agent sends a user while working out with them what they want. It says where the work
+  stands and what the agent took from the user's last answer, what raised the question, then asks one
+  question the user can answer from what they know, knowing what the answer will change.
+packages:
+  tone_and_language: {option: professional}
+  banned_words: {option: default}
+  writing_structure:
+    option: default
+    # The message opens with where the work stands, by design, so its main point is not its first sentence.
+    items: {main-point-first: "off"}
+asserts:
+  must_not_use:
+    - 'a score or probability written as a number, such as "0.46" or "(0.35)"'
+    - '"spec", "assertion", "package", "cascade" or "part path" as the names of the tool''s own things, or a rule kind written as code, such as "must_say"'
+  should:
+    - {text: "reads as one colleague writing to another: the agent writes to the user as 'you', and of itself, when it speaks of itself, as 'I' or 'we'", cascade: false}
+    # Length is not checked (SPEC.md, "Known limits"); what can be checked is that nothing is said twice.
+    - {text: 'says each point once: no sentence repeats what an earlier sentence or section already said', cascade: false}
+children:
+  where-we-are:
+    type: section
+    name: Where we are
+    description: >-
+      the opening section, on where the work stands; its heading starts "Where we are:" and goes on in a
+      few words of the agent's own, such as "Where we are: nearly there"
+    present:
+      when:
+        - 'it is a new question: none of the headings in the message starts "Quick question:" or "Quick questions:"'
+    comes: {before: question}
+    packages:
+      # It restates the user's latest message on purpose, which the "bottom-line" item counts against it.
+      banned_words: {items: {bottom-line: "off"}}
+    asserts:
+      must_say:
+        # The goal is folded into how far the work has got: asked on its own, it failed good messages that
+        # stated it only through their progress (.22 to .44).
+        - 'how far the work has got towards what the user wants, such as what the agent has read, or what the agent and the user have settled so far'
+        - "what the agent understood from the user's latest message, restated in its own words: their last answer, or, before they have answered anything, their request"
+  what-i-noticed:
+    type: section
+    name: What I noticed
+    description: >-
+      the middle section, on what in the document or the conversation raised the question; its heading
+      starts "What I noticed:" and goes on to name the thing noticed, such as "What I noticed: your
+      proposal asks others for cost"
+    present:
+      when:
+        - 'it is a new question (none of the headings in the message starts "Quick question:" or "Quick questions:"), and it asks about the document''s content or about what the user wants from it rather than for a go-ahead to take the next step'
+    comes: {before: question}
+    asserts:
+      must_say:
+        - 'what the agent noticed that raised the question, such as a passage in the document, something missing from it, or something the user said'
+        - 'something concrete for the user to react to: words quoted from their document in quotation marks, a small made-up example, or two versions side by side'
+  question:
+    type: section
+    name: The question
+    description: >-
+      the last section of a message that opens with where the work stands; it puts one question to the
+      user, usually as its heading
+    present:
+      when:
+        - 'it is a new question: none of the headings in the message starts "Quick question:" or "Quick questions:"'
+    packages:
+      # In this section an offer to take the next step is the question itself.
+      banned_words: {items: {closing-offer: "off"}}
+    asserts:
+      must_not_say:
+        - 'a second question the user must also answer, separate from the first; one question offering two answers to choose between is a single question'
+      must_say:
+        - 'a question put to the user, in the heading or the text'
+        - 'what each possible answer would change: what the agent will do or write differently for each'
+      should:
+        - 'asks something the user can answer in a sentence from what they know about their document and its readers, without learning how the tool works'
+  quick-question:
+    type: section
+    name: Quick question
+    description: >-
+      a short follow-up on the user's last answer before the agent moves on, as one question in prose or
+      a short list of questions; its heading starts "Quick question:" or "Quick questions:"
+    packages:
+      # The heading is short and the questions are brief; fragments in them are not a fault here. It
+      # restates the user's answer on purpose, which the "bottom-line" item counts against it.
+      tone_and_language: {items: {full-sentences: "off"}}
+      banned_words: {items: {bottom-line: "off"}}
+    asserts:
+      must_say:
+        - "what the user said in their last answer, in their words or the agent's, as in \"You said …\""
+        - 'what the answers will change, such as what the rules will cover or what the agent will do next'
+    children:
+      question-list:
+        type: list
+        description: the follow-up questions, one per entry
+        asserts:
+          every_entry:
+            - 'ask one short question: a second question in the same entry breaks this'
