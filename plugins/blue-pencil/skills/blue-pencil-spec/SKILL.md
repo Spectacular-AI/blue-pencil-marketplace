@@ -31,13 +31,24 @@ your notes and files. They see their document, what you noticed in it, and your 
 
 ## Talking with the user
 
-Every message that asks the user something is written toward
-[question.spec.yaml](question.spec.yaml), a spec for a good question. In short: say where the work
-stands (the goal as you understand it, and what is settled so far) in a sentence or two; say what you
-took from their last answer; then ask one question, with what raised it, something concrete to react
-to, and what their answer will change. Write as one colleague to another, in a professional tone, in
-full sentences, naming each thing in full. When you are unsure a question meets it, review your draft
-against it before you send it. [WORDS.md](WORDS.md) has the plain word for each of the tool's words.
+Every message that asks the user something, the first one included, is written toward
+[question.spec.yaml](question.spec.yaml), a spec for a good question. It has three short sections,
+each under an H4 heading that starts with the section's name and may add a few words of its own after a
+colon:
+
+- **`#### Where we are`**: the goal as you understand it, what is settled so far, and what you took
+  from their last answer;
+- **`#### What I noticed`**: what raised the question, with something concrete to react to: their own
+  words quoted, a small example, or two versions side by side;
+- **`#### My question`**: one question, and what their answer will change.
+
+Write as one colleague to another, in a professional tone, in full sentences, naming each thing in full,
+each section a sentence or two.
+
+**Calibrate on the first two questions.** Before you send each of the session's first two questions,
+save it to a file and review it against question.spec.yaml. Fix what fails, and keep a note of what you
+fixed: every later question avoids it. After those two, write toward the spec and review a draft only
+when you are unsure it meets it. [WORDS.md](WORDS.md) has the plain word for each of the tool's words.
 
 The user answers in their own way: a reframe, a half answer, a question back. Each of these is
 information. Take what it tells you, answer their question before you ask your next one, and let a
@@ -67,7 +78,7 @@ Done when you can say the goal in two sentences: what the document is for, and w
 
 ### 2. Agree the goal
 
-Say your reading as the goal, in two sentences, and ask whether it is right. The user's answer is the
+Say your reading as the goal, in two sentences under "Where we are", and ask whether it is right. The user's answer is the
 most valuable one of the session: a correction tells you what they care about that the document did
 not show you.
 

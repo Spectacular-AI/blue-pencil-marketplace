@@ -20,8 +20,8 @@ calls and your own notes.
 ## A message to the user
 
 - **One thing a message**: one goal, one question, or one set of flags.
-- **A question** is written toward [question.spec.yaml](question.spec.yaml): where the work stands
-  first, then the question, with what raised it and what the answer will change.
+- **A question** is written toward [question.spec.yaml](question.spec.yaml), in three short sections:
+  where we are, what I noticed, and my question with what the answer will change.
 - **Any other message puts its point first**, then at most a few lines. What you found along the way
   stays in your notes.
 - **Quote their document** when you ask about it; a quoted line is easier to judge than a description.
