@@ -37,7 +37,7 @@ something, so the body need not repeat it. A **new question** has up to three sh
 headings:
 
 - **`#### Where we are: …`**, the heading going on in your own words ("Where we are: nearly there"):
-  what the work is for, how far it has got, and what you understood from the user's latest message
+  how far the work has got towards what the user wants, and what you understood from their latest message
   (their last answer, or before they have answered anything, their request);
 - **`#### What I noticed: …`**, naming the thing noticed ("What I noticed: your proposal asks others
   for cost"): what raised the question, with something concrete to react to: their own words quoted, a

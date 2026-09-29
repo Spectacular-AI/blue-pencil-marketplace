@@ -43,8 +43,9 @@ children:
       banned_words: {items: {bottom-line: "off"}}
     asserts:
       must_say:
-        - "what the work is for: the goal the agent and the user are working towards, in the agent's own words"
-        - 'how far the work has got, such as what the agent has read, or what the agent and the user have settled so far'
+        # The goal is folded into how far the work has got: asked on its own, it failed good messages that
+        # stated it only through their progress (.22 to .44).
+        - 'how far the work has got towards what the user wants, such as what the agent has read, or what the agent and the user have settled so far'
         - "what the agent understood from the user's latest message, restated in its own words: their last answer, or, before they have answered anything, their request"
   what-i-noticed:
     type: section
