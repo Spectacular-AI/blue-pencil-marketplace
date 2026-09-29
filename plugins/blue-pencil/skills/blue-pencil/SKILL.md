@@ -14,8 +14,14 @@ from 0 to 1, passing above 0.5 (a check at exactly 0.5 fails; values are shown r
 so a check shown at 0.5 can be listed as failed), named by its part's path and its key in the spec. A
 review also gives the document one **score**: the weighted mean of every check's value. The tools come
 from the `blue-pencil` MCP server: `catalog`, `generate_spec` and `check_spec` are free; each `review` is
-paid. The `blue-pencil-files` server gives the same `review` and `check_spec` for files on disk:
-`review_files` and `check_spec_file`.
+paid.
+
+The server needs the user signed in: the first time it is used, Claude Code opens the browser, where
+they sign in and pick the account to use, their own or a team's. That account's plan decides what you
+get. On **Basic**, the server offers `review` alone, with no `spec` input: it reviews against the spec
+generated from the document's headings, and returns that spec. A spec sent anyway is refused with
+`plan_required`. Writing, checking or tuning a spec needs **Premium** (or a team on Team Premium); tell
+the user so rather than working around it.
 
 Words used throughout:
 
@@ -28,18 +34,18 @@ Words used throughout:
 Every document goes with its `format`, `markdown`, the only format today. Which tool depends on where
 the document is:
 
-- **A file on disk**: `review_files`, with the spec's path and the documents' paths, globs allowed
-  (`bad/*.md`). It reads the files, sends their text to `review`, and returns each review's YAML as
-  `review` answers it, then a table per document. Its paths are inside the folder the session started
-  in, which its description names. `check_spec_file` checks a spec file the same way.
+- **A file on disk**: read it, and send its text to `review`, with the spec file's text. Send the file's
+  text exactly as it is on disk, unedited.
 - **Text only in the conversation** (pasted, or not saved): `review`, with the document and the spec's
-  YAML as text. `check_spec` takes the spec as text.
+  YAML as text.
+
+`check_spec` takes the spec as text, from a file or the conversation.
 
 ## Review a document
 
 1. Take the spec the user names. With none, review without one: the review generates a spec from the
    document's headings and returns it at the end; save it if the document will be reviewed again.
-2. Call `review_files` with the document's path and the spec's path, or `review` with their text.
+2. Call `review` with the document's text and the spec's text.
 3. Read the result with [RESULTS.md](RESULTS.md) the first time in a session.
 4. Report the headline (pass, checks, failed), then every failed check and every unsure check: its part
    path, its key, and what its answers say.
@@ -76,8 +82,8 @@ Read [SPEC.md](SPEC.md) first, and call `catalog` once.
 5. Choose packages from `catalog` only where the goal or the writers' house style calls for them, and
    turn off the items that do not fit this kind of document. A package item the known-good documents
    do not follow fails every one of them.
-6. Save the spec to a file and call `check_spec_file` on it; fix the field at the path it names; repeat
-   until it returns the spec.
+6. Save the spec to a file and call `check_spec` with its text; fix the field at the path it names;
+   repeat until it returns the spec.
 
 Done when the check returns the spec and every clause has its assertion on the part it is about.
 

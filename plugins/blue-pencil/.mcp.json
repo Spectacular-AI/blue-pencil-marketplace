@@ -2,11 +2,7 @@
   "mcpServers": {
     "blue-pencil": {
       "type": "http",
-      "url": "https://blue-pencil-nu.vercel.app/api/mcp"
-    },
-    "blue-pencil-files": {
-      "command": "node",
-      "args": ["${CLAUDE_PLUGIN_ROOT}/server/dist/blue-pencil-files.mjs"]
+      "url": "https://slop-or-not.ai/api/mcp"
     }
   }
 }

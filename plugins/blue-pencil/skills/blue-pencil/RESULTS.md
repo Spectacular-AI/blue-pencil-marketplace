@@ -115,21 +115,13 @@ Act on a decisive value. Review again before acting on a value within 0.10 of 0.
 When the review generated the spec, the YAML ends with it as `spec: |`, with two comment lines showing
 where `title` and `description` go. When you sent a spec, it is not repeated.
 
-## Several documents
-
-`review_files` answers a block per document: a line `# <path>`, then that document's review exactly as
-`review` writes it. Last comes a table, one row per document with `pass`, `checks`, `failed` and
-`unsure` (the unsure counts of its metrics, summed), and a row for all of them. A document whose review
-answered with an error has that error as its block and `error: <code>` in its row; the others are
-reviewed as usual. With `save_to`, each block's review is also written there, as
-`<path without its extension>.review.yaml`, and the table as `table.md`.
-
 ## Errors
 
 `error: {code, message}`, with the tool's error flag set:
 
 | Code | Means | Do |
 |---|---|---|
+| `plan_required` | A spec was sent on Basic, whose reviews use the generated spec | Review without a spec, or tell the user that their own spec needs Premium |
 | `spec_invalid` | A field of the spec is wrong; `path` names it | Fix that field; `check_spec` finds these for free |
 | `request_invalid` | The call itself is malformed; `path` may name the argument | Fix the call |
 | `document_too_large` | The document is over the size limit; `limit` and `estimate` are in tokens | Review it in parts |
@@ -138,8 +130,3 @@ reviewed as usual. With `save_to`, each block's review is also written there, as
 An argument that is missing or of the wrong type (no `format`, a spec sent as an object, not YAML text) is
 refused before the tool runs, with the error flag set and a plain-text message naming the argument: fix
 that argument and call again.
-
-`review_files` and `check_spec_file` refuse a path outside their folder, a missing file and a glob that
-matches nothing before any review, with a plain-text message naming the path: give a path inside the
-folder their descriptions name. "The Blue Pencil server did not answer" means the call never reached a
-review: try once more.
