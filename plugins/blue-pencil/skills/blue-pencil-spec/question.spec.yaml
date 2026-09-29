@@ -1,7 +1,9 @@
-# A good question to the user: three short sections under H4 headings. Each heading starts with its
-# section's name and may add its own words after a colon ("#### Where we are: your one-pager so far");
-# a heading in other words entirely is not found (.06 to .41). Write each question toward it; review the
-# session's first two against it before sending them, and a later one when unsure (Drew, 2026-09-29).
+# A good question to the user, in up to three short sections under H4 headings that say something of
+# their own. "Where we are:" and "What I noticed:" start their headings, followed by the agent's own
+# words; the question's heading is free, ideally the question itself. Without the starting words, 2 of 4
+# "Where we are" headings and 1 of 3 "What I noticed" headings were found; with them, all 11 in 6 good
+# messages (Drew, 2026-09-29). Write each question toward this spec; review the session's first two
+# against it before sending them.
 title: A question to the user
 description: >-
   One message an agent sends a user while working out with them what they want. It says where the work
@@ -28,19 +30,26 @@ children:
   where-we-are:
     type: section
     name: Where we are
-    description: where the work stands, and what the agent took from the user's last answer
+    description: >-
+      the opening section, on where the work stands; its heading starts "Where we are:" and goes on in a
+      few words of the agent's own, such as "Where we are: nearly there"
     present: required
-    comes: {before: what-i-noticed}
+    comes: {before: question}
     asserts:
       must_say:
-        - "the goal of the work, as the agent understands it, in the agent's own words"
-        - 'how far the work has got: what the agent and the user have settled so far'
-        - "what the agent took from the user's last message, restated in the agent's own words"
+        - "what the work is for: the goal the agent and the user are working towards, in the agent's own words"
+        - 'how far the work has got, such as what the agent has read, or what the agent and the user have settled so far'
+        - "what the agent understood from the user's latest message, restated in its own words: their last answer, or, before they have answered anything, their request"
   what-i-noticed:
     type: section
     name: What I noticed
-    description: what the agent noticed in the document or the conversation that raised the question
-    present: required
+    description: >-
+      the middle section, on what in the document or the conversation raised the question; its heading
+      starts "What I noticed:" and goes on to name the thing noticed, such as "What I noticed: your
+      proposal asks others for cost"
+    present:
+      when:
+        - "the question asks about the document's content or about what the user wants from it, not for a go-ahead to take the next step"
     comes: {before: question}
     asserts:
       must_say:
@@ -48,12 +57,17 @@ children:
         - 'something concrete for the user to react to: words quoted from their document in quotation marks, a small made-up example, or two versions side by side'
   question:
     type: section
-    name: My question
-    description: the one question the user is asked to answer, and what each answer will change
+    name: The question
+    description: >-
+      the closing section, which puts one question to the user; its heading is the question itself, or
+      names its subject, such as "Does every one-pager need them?"
     present: required
+    packages:
+      # In this section an offer to take the next step is the question itself.
+      banned_words: {items: {closing-offer: "off"}}
     asserts:
       must_say:
-        - 'a question for the user to answer'
+        - 'a question put to the user, in the heading or the text'
         - 'what the answer will change: what the agent will do or write differently depending on the answer'
       should:
         - 'asks something the user can answer in a sentence from what they know about their document and its readers, without learning how the tool works'

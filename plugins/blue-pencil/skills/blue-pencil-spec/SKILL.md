@@ -32,15 +32,18 @@ your notes and files. They see their document, what you noticed in it, and your 
 ## Talking with the user
 
 Every message that asks the user something, the first one included, is written toward
-[question.spec.yaml](question.spec.yaml), a spec for a good question. It has three short sections,
-each under an H4 heading that starts with the section's name and may add a few words of its own after a
-colon:
+[question.spec.yaml](question.spec.yaml), a spec for a good question. It has up to three short
+sections under H4 headings. A heading is a chance to say something, so the body need not repeat it:
 
-- **`#### Where we are`**: the goal as you understand it, what is settled so far, and what you took
-  from their last answer;
-- **`#### What I noticed`**: what raised the question, with something concrete to react to: their own
-  words quoted, a small example, or two versions side by side;
-- **`#### My question`**: one question, and what their answer will change.
+- **`#### Where we are: …`**, the heading going on in your own words ("Where we are: nearly there"):
+  what the work is for, how far it has got, and what you understood from the user's latest message
+  (their last answer, or before they have answered anything, their request);
+- **`#### What I noticed: …`**, naming the thing noticed ("What I noticed: your proposal asks others
+  for cost"): what raised the question, with something concrete to react to: their own words quoted, a
+  small example, or two versions side by side. Leave it out when the question only asks for a go-ahead
+  to take the next step;
+- **the question**, under a heading that is the question itself, or names its subject: one question,
+  and what their answer will change.
 
 Write as one colleague to another, in a professional tone, in full sentences, naming each thing in full,
 each section a sentence or two.
