@@ -155,7 +155,8 @@ Write the spec as [SPEC.md](SPEC.md) says, with the easy wins only:
    has headings.
 5. Save it to a file, and call `check_spec` until it returns the spec.
 
-How a rule is worded, which kind it is and which part it sits on are yours to settle, by reviewing. Ask
+Write each rule as [SPEC.md](SPEC.md)'s "An effective rule" says. How a rule is worded, which kind it is
+and which part it sits on are then yours to settle, by reviewing. Ask
 the user only what they want.
 
 Then review the user's own documents against the spec, reading the result with

@@ -138,6 +138,51 @@ Every part has a `type`, and is found in the document by what identifies it:
   `typescript` for TypeScript). A block with no name, or another name, fails, whatever its content is
   written in.
 
+## An effective rule
+
+A rule is **effective** when two things hold:
+
+- **The review decides it**: on a document whose answer is known, its check is decisive (below 0.2 or
+  above 0.8) and right, and a second review agrees.
+- **It holds for the kind**: it is right on documents of the kind that tuning never read, because it
+  states something the user wants of every such document. The held-back documents of
+  [TUNING.md](TUNING.md) measure this; a spec can pass the first test and fail this one.
+
+So that the review decides it:
+
+- **One idea per rule**, stated outright, with what must not count named in the rule ("Content rules",
+  below). A rule unsure on several documents usually holds two ideas or vague words.
+- **Ask of each part only what its own text shows.** An `every_entry` rule judges each entry of the list:
+  "follows from the user's last answer", an answer outside the list, did not catch an entry off the
+  subject.
+- **Let the heading find the part.** A heading in other words for the same thing is found; a heading
+  that names its topic instead of what the part is for ("Cost and success" for "What I noticed") was
+  found in 1 of 3 good documents. Where headings must vary, fix their first words and let the rest vary
+  ("What I noticed: cost and success"): all 11 such headings were found.
+- **Keep `description` to what the part is for.** A long example in it lowered finding from sure to .21
+  to .48; put examples in rules.
+- **Condition a part on what the document shows.** "Required unless the message is a quick follow-up"
+  was judged wrongly on every follow-up; "required unless a heading starts 'Quick question:'" was right
+  at .96 to .99.
+- **Check each package item against the goal.** An item can count against what a rule requires ("an
+  opening that restates the reader's request", where a part must restate the user's answer): turn it off
+  in those parts.
+- **Stay clear of "Known limits"**, below: name such a want to the user rather than tune against it.
+
+So that it holds for the kind:
+
+- **Take every rule from the user's goal, not from the examples.** A habit the examples share is a rule
+  only when the user says so.
+- **Write about the kind, never the instance**: no name, fact or heading that only one sample has. A light
+  spec for one document is the exception.
+- **A part only some documents have is optional**, or required when a condition holds.
+- **Cover the forms the kind takes, and each rule from both sides.** List the forms before tuning (for
+  a message to a user: a first message, a new question, a go-ahead, a follow-up) and have a good example
+  of each; for a rule, a document that meets it, a near miss, a synonym, the thing in the wrong place, and
+  the thing absent. Write each expected result down before the review ([TUNING.md](TUNING.md), "The loop").
+- **Expect real documents to behave differently from made ones**: a frontmatter's presence was decided on
+  10 of 10 made cases and unsure on real notes.
+
 ## Content rules: `asserts`
 
 `asserts` holds rules about a part's text, by kind; each kind a list of rules. On a part, a rule reads
