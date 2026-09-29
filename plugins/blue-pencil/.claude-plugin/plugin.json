@@ -1,8 +1,8 @@
 {
   "name": "blue-pencil",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "displayName": "Blue Pencil",
-  "description": "Review markdown documents against a spec, revise them until they pass, and write and tune specs: the Blue Pencil MCP server, a local server that reviews files on disk, and the skill.",
+  "description": "Define what a good document is as a spec, review markdown documents against it and revise them until they pass: the Blue Pencil MCP server and two skills.",
   "author": { "name": "Spectacular AI" },
   "homepage": "https://slop-or-not.ai"
 }

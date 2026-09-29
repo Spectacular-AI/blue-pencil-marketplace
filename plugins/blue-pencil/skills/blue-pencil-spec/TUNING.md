@@ -1,6 +1,6 @@
 # Tuning a spec
 
-Read [SPEC.md](SPEC.md) and [RESULTS.md](RESULTS.md) first: tuning maps each check back to the field of
+Read [SPEC.md](SPEC.md) and [RESULTS.md](../blue-pencil-review/RESULTS.md) first: tuning maps each check back to the field of
 the spec it comes from.
 
 Tuning makes a spec's checks decisive and **right** on example documents: a check is right when it passes
@@ -19,10 +19,44 @@ together (`contacts.contact-table columns.required.phone`).
   of it; add what the goal requires (a section, links to related documents) to your copies, or they test
   the spec against the wrong target.
 
+## Test documents
+
+Find them in this order, and take the first that gives you documents:
+
+1. **Documents of this kind the user already has**: look in the folder they pointed to.
+2. **Documents that were rejected or complained about**, or that a spec let through: real known-bad
+   documents, the best there are. Ask what was wrong with each.
+3. **Ask the user** for three to five they are happy with.
+4. **Make known-bad copies** yourself, as step 1 of the loop says.
+
+**Hold documents back before you write or change a rule.** Pick them at random, not by which look
+hardest: one in three of the known-good documents, and at least one. Read them only to make known-bad
+copies of them. Tune on the rest; review the held-back documents and their copies once, at the end.
+Their result is the one you report.
+
+## What a sample can show
+
+Tell the user what their sample can show, in their words ("with three examples I can catch a rule that
+is badly wrong, not one that is wrong now and then").
+
+| Known-good documents | A rule that wrongly fails this share of good documents shows up | The share of checks above 0.8 differs between one such sample and another by | The same sample reviewed again moves that share by |
+|---|---|---|---|
+| 1 | half of them: 50% of the time | 13 to 20 points | 3 points (up to 8) |
+| 3 | half: 88%; one in five: 49% | 5 to 13 | 2.4 (up to 5) |
+| 5 | one in three: 86%; one in ten: 41% | 3 to 9 | 1.9 (up to 4) |
+| 10 | one in five: 89%; one in twenty: 40% | 3 to 6 | 1.9 (up to 3) |
+| 20 | one in ten: 88%; one in twenty: 64% | 2 to 4 | 1.3 (up to 2) |
+| 30 | one in ten: 96%; one in twenty: 79% | about 2 | 1.0 (up to 1.4) |
+
+- Column 2 is arithmetic. Columns 3 and 4 were measured on 116 notes of five kinds, each reviewed five
+  times; column 4 is the median, with the 90th percentile in brackets.
+- **With fewer than ten documents, read checks one by one, not the share.** One check moves by a median
+  of 0.01 between reviews, so a decisive check that is wrong on a known-good document is a finding even
+  with one document. A change in the share smaller than columns 3 and 4 is not.
+
 ## The loop
 
-1. **Examples.** Take at least two known-good documents from the user or the task; ask for them when
-   there are none. For each clause of the goal, write one known-bad copy, aimed at the check
+1. **Examples.** Take the known-good documents you did not hold back ("Test documents", above). For each clause of the goal, write one known-bad copy, aimed at the check
    that checks that clause. A clause that no small change breaks ("explains its idea") still gets one:
    replace the part it concerns with text that fails it. If two such copies still pass, stop: the review
    infers the thing from the rest of the document. Count the check as wrong, and name it in your report
@@ -45,12 +79,14 @@ together (`contacts.contact-table columns.required.phone`).
 6. **Review again** every example, into a new folder, since a change can move checks on
    documents it was not aimed at, and go back to step 4.
 
-**Done** when every check is decisive and right on every example; or when two passes in a row each raise
+**Done** when every check is decisive and right on every example you tuned on; or when two passes in a row each raise
 the share of decisive and right checks by less than 5 points over the pass before (a fall counts as less
 than 5). When the set of examples changes between passes, compare the shares on the examples both passes
 reviewed. If a check is waiting for its second close review when the stop rule is met, review that
-example once more before you stop. Then list the checks still unsure or wrong, each with its likely
-cause.
+example once more before you stop. Then review the held-back documents and their known-bad copies, once, and report their share
+of checks decisive and right beside the share on the examples you tuned on: a held-back share well
+below the other means the spec fits its examples, not the kind. List the checks still unsure or wrong,
+each with its likely cause.
 
 ## Causes, and what to change
 
