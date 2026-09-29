@@ -19,8 +19,11 @@ calls and your own notes.
 
 ## A message to the user
 
-- **One thing a message**: one objective, one question, or one set of flags.
-- **The point first**, then at most a few lines. What you found along the way stays in your notes.
+- **One thing a message**: one goal, one question, or one set of flags.
+- **A question** is written toward [question.spec.yaml](question.spec.yaml): where the work stands
+  first, then the question, with what raised it and what the answer will change.
+- **Any other message puts its point first**, then at most a few lines. What you found along the way
+  stays in your notes.
 - **Quote their document** when you ask about it; a quoted line is easier to judge than a description.
 - **Offer two or three options** when you offer any.
 - **A file's path** only when they need to open the file.

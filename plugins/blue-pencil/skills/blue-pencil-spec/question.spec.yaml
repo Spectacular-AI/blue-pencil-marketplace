@@ -1,0 +1,32 @@
+# A good question to the user. Write each question toward it; review a question against it when unsure.
+# The user can answer from what they know, knowing what they are answering and why (Drew, 2026-09-29).
+title: A question to the user
+description: >-
+  One message an agent sends a user while working out with them what they want. It says where the work
+  stands and what the agent took from the user's last answer, then asks one question the user can answer
+  from what they know, knowing why it is asked and what the answer will change.
+packages:
+  tone_and_language: {option: professional}
+  banned_words: {option: default}
+  writing_structure:
+    option: default
+    # The message opens with where the work stands, by design, so its main point is not its first sentence.
+    items: {main-point-first: "off"}
+asserts:
+  must_say:
+    - "the goal of the work, as the agent understands it, in the agent's own words"
+    - 'how far the work has got: what the agent and the user have settled so far'
+    - "what the agent took from the user's last message, restated in the agent's own words"
+    - 'what the agent noticed that raised the question, such as a passage in the document, something missing from it, or something the user said'
+    - 'what the answer will change: what the agent will do or write differently depending on the answer'
+    - 'a question for the user to answer, after the account of where the work stands'
+    - 'something concrete for the user to react to: words quoted from their document in quotation marks, a small made-up example, or two versions side by side'
+  must_not_use:
+    - 'a score or probability written as a number, such as "0.46" or "(0.35)"'
+    - '"spec", "assertion", "package", "cascade" or "part path" as the names of the tool''s own things, or a rule kind written as code, such as "must_say"'
+  must_not_say:
+    - 'a second question the user must also answer, separate from the first; one question offering two answers to choose between is a single question'
+  should:
+    - {text: 'asks something the user can answer in a sentence from what they know about their document and its readers, without learning how the tool works', cascade: false}
+    - "reads as one colleague writing to another: the agent writes as 'I' or 'we' to the user as 'you'"
+    - 'is brief: says each point once, and holds nothing the user does not need in order to answer the question'

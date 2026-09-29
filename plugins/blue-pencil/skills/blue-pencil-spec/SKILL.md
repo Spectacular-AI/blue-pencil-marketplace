@@ -18,13 +18,42 @@ The tools come from the Blue Pencil MCP server: `catalog`, `generate_spec` and `
 each `review` is paid. When a tool is missing or refuses for the user's plan, follow "When the plan
 refuses" in [RESULTS.md](../blue-pencil-review/RESULTS.md).
 
-Every message to the user follows [WORDS.md](WORDS.md): their words, never the tool's.
+## What a good session gives the user
 
-## 1. Read, and form your reading
+- **A document they are happy with**, or rules they trust for a kind of document.
+- **Rules that hold only what they agreed to**, each one something they would say in their own words.
+- **A clear account** of which of their wants the rules check, and which they must read for themselves.
+- **Few decisions, each easy**: they answered from what they know about their document and its readers,
+  and never had to learn how the tool works.
 
-Read every document the user pointed to. Settle for yourself:
+The spec work happens out of their sight: scores, rule wording, tuning rounds and review counts stay in
+your notes and files. They see their document, what you noticed in it, and your questions.
 
-- the kind of document, who reads it, and what that reader does after reading it;
+## Talking with the user
+
+Every message that asks the user something is written toward
+[question.spec.yaml](question.spec.yaml), a spec for a good question. In short: say where the work
+stands (the goal as you understand it, and what is settled so far) in a sentence or two; say what you
+took from their last answer; then ask one question, with what raised it, something concrete to react
+to, and what their answer will change. Write as one colleague to another, in a professional tone, in
+full sentences, naming each thing in full. When you are unsure a question meets it, review your draft
+against it before you send it. [WORDS.md](WORDS.md) has the plain word for each of the tool's words.
+
+The user answers in their own way: a reframe, a half answer, a question back. Each of these is
+information. Take what it tells you, answer their question before you ask your next one, and let a
+reframe change your next question rather than repeating the old one.
+
+## The session
+
+Five things happen, in roughly this order. Each has a finish line; how you get there is yours to choose,
+and the ideas under each are starting points, not a script.
+
+### 1. Form your reading
+
+Read every document the user pointed to, and settle for yourself:
+
+- the kind of document, who reads it, and **what that reader must be able to decide, believe or do
+  after reading it**: for a proposal, the case it must make; for a runbook, the service restored;
 - the **use**, from the table below;
 - what the good ones share, or what reads wrong in this one.
 
@@ -34,58 +63,69 @@ Read every document the user pointed to. Settle for yourself:
 | A kind people write again and again | Several documents of one kind, in loose shapes | The same, and the few parts every one of them has | The user's examples |
 | An agent's output | The same headings, tables, lists or frontmatter in every document | Its parts: which must be there, their order, a table's columns, what each entry of a list holds; then what each part says | The user's examples, some held back |
 
-Done when you can say the objective in two sentences.
+Done when you can say the goal in two sentences: what the document is for, and what "good" will mean.
 
-## 2. Confirm the objective
+### 2. Agree the goal
 
-Your first message to the user is the **objective** and nothing else: two sentences at most, saying
-what you take the document to be for and what "good" will mean, ending in a question they can answer
-with "yes" or a correction.
+Say your reading as the goal, in two sentences, and ask whether it is right. The user's answer is the
+most valuable one of the session: a correction tells you what they care about that the document did
+not show you.
 
-> These read as research write-ups a teammate uses to make a decision without redoing the work. I'd
-> take "good" to mean a reader can always tell where each claim came from and what was left unchecked.
-> Is that right?
+Whenever an answer changes the goal, now or later, say the new goal back in two sentences and get a
+yes before going on.
 
-Done when the user has said yes, or corrected you and said yes to your corrected objective.
+Done when the user has said yes to the goal as you last stated it.
 
-## 3. Peel back
+### 3. Find what the goal leaves open
 
-Ask what the objective leaves open, **one question a message**, each one answerable in a sentence:
+Ask what the goal leaves open, one question a message, taken from what the table says this use's spec
+settles, and only what the documents do not already answer. For one document, ask what is true: the
+spec can hold only the facts the user gives you.
 
-- a reading of yours to confirm ("Every one of these ends with a list of sources. Must a note have one?");
-- a choice between two ("Which would you send: the one that opens with the date, or with the apology?");
-- a passage from their own document ("'Your data remains completely safe.' Can you stand behind that?");
-- what a good one is **not** ("Would it be wrong for the email to promise anything beyond the new date?").
+Ideas for a question:
 
-Take the questions from what the table says this use's spec settles, and ask only what the documents
-do not already answer. For one document, ask what is true: the spec can hold only the facts the user
-gives you.
+- a reading of yours to confirm: "Every one of these ends with a list of sources. Should a note always
+  have one?";
+- a passage from their own document: "'Your data remains completely safe.' Can you stand behind that?";
+- two versions side by side, one with the thing and one without, asking which they would send;
+- a small made-up example of the thing going wrong;
+- what a good one is **not**: "Would it be wrong for the email to promise anything beyond the new date?".
 
-After every three or four answers, say back what you have so far in three lines or fewer.
+When the user says they are not sure, ask once more in another form, usually two versions side by side
+or a small example. If they are still unsure, decide yourself, tell them what you decided and why, and
+move on.
 
-Done when the user's answers stop adding anything: "I don't know", "you decide", or yes to whatever
-you propose. That is good enough. A user learns the rest of what they want by seeing something.
+Done when the user's answers stop adding anything: "I don't know", "you decide", or yes to whatever you
+propose. A user learns the rest of what they want by seeing their document flagged.
 
-## 4. Say what cannot be checked
+### 4. Say what cannot be checked
 
-Tell the user, in a sentence or two, which of their wants Blue Pencil cannot check, and write no rule
-for those. It cannot check:
+Blue Pencil reads only the document and the spec, and answers each rule with one score for the part it
+is written on. So it cannot check:
 
-- a fact against a source outside the document: it reads only the document and the spec;
+- a fact against a source outside the document;
 - a length or a count;
-- a rule that must hold for every claim, or every row of a table, one by one: it reads the part as a
-  whole, so one lapse among many passes;
-- markup, such as the form of a link, or a field's exact value.
+- markup, such as the form of a link, or a field's exact value;
+- **where** a rule that must hold item by item breaks: every term defined, every claim backed, every
+  row of a table. The score says whether the part as a whole follows the rule, never which item breaks
+  it, and the kind of rule decides which way it errs: a tone rule (`should`) fails on one lapse, so a
+  long document fails it on a single missed term; a meaning rule (`must_say`) can let one lapse among
+  many pass.
 
+Tell the user, in a sentence or two, which of their wants fall here, before you write any rule. For an
+item-by-item want, offer them a choice: keep it as a strict rule, which you will answer by reading the
+document yourself whenever it fails, naming the items that break it; or leave it out, as a part they
+read themselves. A failed item-by-item rule is resolved by your reading, never by reviewing again.
 [SPEC.md](SPEC.md), "Known limits", has the measured list.
 
-Done when each want of the user's is either going into the spec or has been named to them as unchecked.
+Done when each want of the user's is either going into the spec or has been named to them as one the
+tool cannot check, with what happens to it.
 
-## 5. Rough in
+### 5. Rough in, show, and let them react
 
 Write the spec as [SPEC.md](SPEC.md) says, with the easy wins only:
 
-1. The objective is its `description`; the kind of document its `title`.
+1. The goal is its `description`; the kind of document its `title`.
 2. Each thing the user agreed to is one rule, on the part it is about.
 3. A package only for what the user agreed to: call `catalog` once, and turn off the items that do not
    fit this kind of document.
@@ -94,16 +134,13 @@ Write the spec as [SPEC.md](SPEC.md) says, with the easy wins only:
    has headings.
 5. Save it to a file, and call `check_spec` until it returns the spec.
 
-How a rule is worded, which kind it is and which part it sits on are yours to settle, by reviewing.
-Ask the user only what they want.
+How a rule is worded, which kind it is and which part it sits on are yours to settle, by reviewing. Ask
+the user only what they want.
 
-Done when `check_spec` returns the spec and every agreed thing has its rule.
-
-## 6. Show, and let them react
-
-Review the user's own documents against the spec, reading the result with
-[RESULTS.md](../blue-pencil-review/RESULTS.md). Then show the user what it flags: three flags at most,
-each as the passage quoted and the rule in plain words, and ask whether each flag is right.
+Then review the user's own documents against the spec, reading the result with
+[RESULTS.md](../blue-pencil-review/RESULTS.md). Fix the rules you can see are worded wrongly yourself.
+Show the user what is left: three flags at most, each as the passage quoted and the rule in plain words,
+and ask whether each flag is right.
 
 - A flag they reject changes the spec. Review again.
 - A good document that fails a rule changes the spec. Review again.
@@ -113,12 +150,13 @@ each as the passage quoted and the rule in plain words, and ask whether each fla
 Done when the user has reacted to the flags, and a review after your last change flags nothing they
 rejected.
 
-## 7. Hand over
+## Hand over
 
 - **One document:** revise it with the `blue-pencil-review` skill until it passes. Give the user the
   document, and name each part they should read themselves because its check stayed unsure.
 - **A kind of document:** give the user the spec's path; what it checks, in five plain lines or fewer;
-  what it cannot check; and how many documents it was tested on.
+  what it cannot check; and how many documents it was tested on. When their own document is still at
+  hand and failing, offer to revise it; on a yes, go on with the `blue-pencil-review` skill yourself.
 
 ## Tune a spec
 
