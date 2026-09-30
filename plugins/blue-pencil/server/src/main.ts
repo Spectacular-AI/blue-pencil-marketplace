@@ -14,7 +14,7 @@ const tools = filesTools(root, hostedServer(hostedConfig(process.env)));
 
 const WORDS = {
   instructions: `Blue Pencil's review and check_spec for files on disk, read inside ${root}; the answers are the hosted Blue Pencil server's. For how to use them, use the blue-pencil skill.`,
-  review_files: `Review documents on disk against a Blue Pencil spec file. Reads each document and the spec inside ${root}, calls Blue Pencil's review with their text, and returns each review's YAML unchanged under a line "# <path>", then a table per document: pass, checks, failed, unsure. Each document is one paid review.`,
+  review_files: `Review documents on disk against a Blue Pencil spec file. Reads each document and the spec inside ${root}, calls Blue Pencil's review with their text, and returns each review's YAML unchanged under a line "# <path>", then a table per document: pass, checks, failed, borderline. Each document is one paid review.`,
   check_spec_file: `Check a Blue Pencil spec file inside ${root} without reviewing: returns check_spec's answer unchanged, the spec in normal form or the path of the field at fault. Free.`,
   spec: `path of the spec's YAML file, from ${root}`,
   spec_optional: `path of the spec's YAML file, from ${root}; leave it out to review each document against a spec generated from its headings`,

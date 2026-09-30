@@ -155,7 +155,7 @@ A rule is **effective** when two things hold:
 So that the review decides it:
 
 - **One idea per rule**, stated outright, with what must not count named in the rule ("Content rules",
-  below). A rule unsure on several documents usually holds two ideas or vague words.
+  below). A rule borderline on several documents usually holds two ideas or vague words.
 - **Ask of each part only what its own text shows.** An `every_entry` rule judges each entry of the list:
   "follows from the user's last answer", an answer outside the list, did not catch an entry off the
   subject.
@@ -185,7 +185,7 @@ So that it holds for the kind:
   of each; for a rule, a document that meets it, a near miss, a synonym, the thing in the wrong place, and
   the thing absent. Write each expected result down before the review ([TUNING.md](TUNING.md), "The loop").
 - **Expect real documents to behave differently from made ones**: a frontmatter's presence was decided on
-  10 of 10 made cases and unsure on real notes.
+  10 of 10 made cases and borderline on real notes.
 
 ## Content rules: `asserts`
 
@@ -325,7 +325,7 @@ Measured on the review's questions; a spec cannot fix these, only avoid them.
 
 - A heading in near-synonyms of the `name` ("Upgrading" for "Migration") is found at 0.43 to 0.49: give
   `name` the heading writers use.
-- Two sections that fit one part, or two with the same heading, leave the part's checks unsure.
+- Two sections that fit one part, or two with the same heading, leave the part's checks borderline.
 - "Comes before" on a part that is absent can still pass; read it beside the part's `present`.
 - `comes: first`, a spec with only `forbidden` columns, a document with many tables, an optional part's
   own rules, and large documents are not measured yet.
@@ -337,8 +337,8 @@ Measured on the review's questions; a spec cannot fix these, only avoid them.
   a condition") let "sometimes", "always" and "maybe" through (.21 to .46); a unit rule for the rows that
   measure something sat near .5; a mark in one column (field names in backticks) caught a whole bad
   table but missed one bad row among 20 (.43 to .51). As `must_not_say` of the breaking row they were
-  unsure too (.36 to .71). Keep such rules out of a spec that must be decisive, or read their checks as
-  unsure.
+  borderline too (.36 to .71). Keep such rules out of a spec that must be decisive, or read their checks
+  as borderline.
 - A code block holds no writer's own text: `must_not_use` and `should` on a code block always pass,
   and `must_use` fails, so a wording rule cannot ban a word inside code (the same word in the prose
   around the block can still pull a `must_use` toward passing: .62 to .68). A `must_say` about what
@@ -358,15 +358,15 @@ Measured on the review's questions; a spec cannot fix these, only avoid them.
   `should` gave .39 to .43 on a title written as a sentence and .51 to .70 on right ones, and
   `must_not_say` passed the sentence (.73 to .83). Name such checks in your report as limits.
 - Meaning: a description saying only when not to use a thing ("Not for code review") reads as half of
-  saying when to use it, unsure either way.
+  saying when to use it, borderline either way.
 - Wording, a pattern: a space in the value and a capital inside it are missed; a leading capital and an
   underscore are caught.
-- `present` on the frontmatter was unsure (.55 to .79) on two long notes that have it, and on many of
+- `present` on the frontmatter was borderline (.55 to .79) on two long notes that have it, and on many of
   their copies; the spec has nothing that changes it.
 - **Link syntax** (`[[note]]`, not `[text](file.md)`) is markup, not words: `must_use` of the wanted form
-  was unsure everywhere (.62 to .84), and naming the characters of the unwanted form unsure on right notes
+  was borderline everywhere (.62 to .84), and naming the characters of the unwanted form borderline on right notes
   (.55 to .79). `must_not_use` of the unwanted form on the list that holds the links failed a copy using
-  it (.09) and stayed unsure on right notes (.48 to .76). Read such a check as unsure.
+  it (.09) and stayed borderline on right notes (.48 to .76). Read such a check as borderline.
 - A rule on a frontmatter field reads only that field's value: word it so it stands on the value alone
   ("a value naming the kind of record", not "what the documented data is"). A field's exact value
   (`type: data-schema`) is not checked decisively either way (.22 to .97 over four kinds).

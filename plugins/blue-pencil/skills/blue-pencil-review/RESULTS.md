@@ -6,11 +6,11 @@ spec, every failed check shown and some passed ones left out:
 
 ```yaml
 review: {pass: false, score: 0.71, checks: 23, failed: 5, ms: 1840}
-metrics:  # score; bands: sure_fail < 0.2 <= unsure <= 0.8 < sure_pass
-  parts: {score: 0.74, failed: 2, sure_fail: 2, unsure: 0, sure_pass: 6}
-  meaning: {score: 0.61, failed: 1, sure_fail: 0, unsure: 2, sure_pass: 2}
-  wording: {score: 0.9, failed: 1, sure_fail: 1, unsure: 0, sure_pass: 8}
-  tone: {score: 0.71, failed: 1, sure_fail: 1, unsure: 0, sure_pass: 1}
+metrics:  # score; bands: sure_fail < 0.2 <= borderline <= 0.8 < sure_pass
+  parts: {score: 0.74, failed: 2, sure_fail: 2, borderline: 0, sure_pass: 6}
+  meaning: {score: 0.61, failed: 1, sure_fail: 0, borderline: 2, sure_pass: 2}
+  wording: {score: 0.9, failed: 1, sure_fail: 1, borderline: 0, sure_pass: 8}
+  tone: {score: 0.71, failed: 1, sure_fail: 1, borderline: 0, sure_pass: 1}
 parts:  # by spec path; each check by its spec key, a cascaded copy after the path it was written on: value; then every answer
   whole_document:  # the whole document: the spec's top-level asserts, tone and packages
     passed:
@@ -51,8 +51,9 @@ parts:  # by spec path; each check by its spec key, a cascaded copy after the pa
   each weighted by its rule's `weight` in the spec (1 unless written; [SPEC.md](../blue-pencil-spec/SPEC.md)); how many checks
   ran, how many failed, how long it took. A review with no checks scores 1.
 - `metrics`: one line per kind of check (`parts` for the container assertions, `meaning`, `wording`,
-  `tone`): its mean value, weighted as the document score is, how many failed, and how many were decisive fails (`sure_fail`), unsure, and
-  decisive passes (`sure_pass`).
+  `tone`): its mean value, weighted as the document score is, how many failed, and how many were decisive fails (`sure_fail`), borderline
+  (`borderline`), and decisive passes (`sure_pass`). An older server's answer calls the borderline
+  band `unsure`, as the key and in the comment on `metrics`: read it as `borderline`.
 
 ## A check's line
 

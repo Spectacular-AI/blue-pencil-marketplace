@@ -178,7 +178,7 @@ rejected.
 ## Hand over
 
 - **One document:** revise it with the `blue-pencil-review` skill until it passes. Give the user the
-  document, and name each part they should read themselves because its check stayed unsure.
+  document, and name each part they should read themselves because its check stayed borderline.
 - **A kind of document:** give the user the spec's path; what it checks, in five plain lines or fewer;
   what it cannot check; and how many documents it was tested on. When their own document is still at
   hand and failing, offer to revise it; on a yes, go on with the `blue-pencil-review` skill yourself.

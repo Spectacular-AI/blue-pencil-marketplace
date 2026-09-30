@@ -60,8 +60,8 @@ is badly wrong, not one that is wrong now and then").
    that checks that clause. A clause that no small change breaks ("explains its idea") still gets one:
    replace the part it concerns with text that fails it. If two such copies still pass, stop: the review
    infers the thing from the rest of the document. Count the check as wrong, and name it in your report
-   as a limit of the question, not of your spec. A known-bad that fails but stays unsure counts as
-   right-but-unsure; a second copy that breaks the rule more plainly tells you whether the rule or the
+   as a limit of the question, not of your spec. A known-bad that fails but stays borderline counts as
+   right-but-borderline; a second copy that breaks the rule more plainly tells you whether the rule or the
    copy is loose. When you split a rule in two, re-aim the known-bad copy written for it, so that each
    copy still breaks one check.
 2. **Expected.** In one file beside the examples, not inside them, write down for each example which
@@ -70,11 +70,11 @@ is badly wrong, not one that is wrong now and then").
 3. **Review** every example with the same spec: one `review` call per example, with its text and the
    spec's text. Save each answer to a file in a folder for this pass (`reviews/pass-1`) as it returns.
 4. **Table.** From each saved review's headline and metrics, list each example's checks, failed and
-   unsure; start from it to see which examples to read. Then per example, per check, from its saved
+   borderline; start from it to see which examples to read. Then per example, per check, from its saved
    review: expected, value, decisive
    or not, right or not. Then the share of the listed checks that are both decisive and right (a missing
    part's own checks are not listed, so they are not counted).
-5. **Change** the spec for each check that is unsure or wrong, by its cause (below). Record each change:
+5. **Change** the spec for each check that is borderline or wrong, by its cause (below). Record each change:
    what changed, why, and the values before and after.
 6. **Review again** every example, into a new folder, since a change can move checks on
    documents it was not aimed at, and go back to step 4.
@@ -85,19 +85,19 @@ than 5). When the set of examples changes between passes, compare the shares on 
 reviewed. If a check is waiting for its second close review when the stop rule is met, review that
 example once more before you stop. Then review the held-back documents and their known-bad copies, once, and report their share
 of checks decisive and right beside the share on the examples you tuned on: a held-back share well
-below the other means the spec fits its examples, not the kind. List the checks still unsure or wrong,
+below the other means the spec fits its examples, not the kind. List the checks still borderline or wrong,
 each with its likely cause.
 
 ## Causes, and what to change
 
 | What you see | Usual cause | Change |
 |---|---|---|
-| Unsure on several examples | The rule holds two ideas, or vague words ("clearly", "the key points") | Split it, or name the thing concretely |
-| Unsure or wrong `present` | `name` is not the heading writers use, or `description` does not say what the part is for | Match `name` to the heading writers use; rewrite `description` as what the part is for |
+| Borderline on several examples | The rule holds two ideas, or vague words ("clearly", "the key points") | Split it, or name the thing concretely |
+| Borderline or wrong `present` | `name` is not the heading writers use, or `description` does not say what the part is for | Match `name` to the heading writers use; rewrite `description` as what the part is for |
 | A part found in the wrong place, or `comes` located the wrong section | Two sections fit the part's words | Make `description` say what sets this part apart |
 | A `must_say` passing on text that only implies it, or failing on text that says it | The rule leaves its boundary to the review | Say in the rule what must not count (SPEC.md, "Content rules") |
 | A wording rule missing a form of the word or a mark | The rule names the word, not its forms or character | Name every form, and each mark by its character (SPEC.md, "Content rules") |
-| A `should` unsure on grammar | The rule names the grammar without saying what it means | Say what it means, with an example (SPEC.md, "Content rules") |
+| A `should` borderline on grammar | The rule names the grammar without saying what it means | Say what it means, with an example (SPEC.md, "Content rules") |
 | An `every_entry` passing a bad entry | "Only" without its boundary | State the boundary (SPEC.md, "Content rules") |
 | Decisive and wrong on a known-good | The rule asks what this kind of document does not need to do, or sits on the wrong part | Reword it, move it to the part where it belongs, or turn it off |
 | A cascaded rule, tone item or package item wrong on a known-good, in one part | The rule does not fit that part | Turn it off there: `{text, off: true}`, or `"off"` for the item in the part's `tone` or `packages` |

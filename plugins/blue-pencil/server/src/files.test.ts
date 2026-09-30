@@ -16,12 +16,12 @@ import type { Hosted, HostedTool } from './hosted';
 // The tools through their interface: a real folder on disk, and a fake hosted server that records
 // each call and answers with review YAML shaped as the hosted server writes it.
 
-const reviewYaml = (checks: number, failed: number, unsure: [number, number]) =>
+const reviewYaml = (checks: number, failed: number, borderline: [number, number]) =>
   [
     `review: {pass: ${failed === 0}, checks: ${checks}, failed: ${failed}, ms: 12}`,
-    'metrics:  # score; bands: sure_fail < 0.2 <= unsure <= 0.8 < sure_pass',
-    `  parts: {score: 0.9, failed: ${failed}, sure_fail: 0, unsure: ${unsure[0]}, sure_pass: 1}`,
-    `  meaning: {score: 0.8, failed: 0, sure_fail: 0, unsure: ${unsure[1]}, sure_pass: 1}`,
+    'metrics:  # score; bands: sure_fail < 0.2 <= borderline <= 0.8 < sure_pass',
+    `  parts: {score: 0.9, failed: ${failed}, sure_fail: 0, borderline: ${borderline[0]}, sure_pass: 1}`,
+    `  meaning: {score: 0.8, failed: 0, sure_fail: 0, borderline: ${borderline[1]}, sure_pass: 1}`,
     'parts:  # by spec path',
     '  intro:',
     '    passed:',
@@ -93,7 +93,7 @@ describe('review_files', () => {
       `# good/a.md\n${reviewYaml(5, 1, [1, 2])}`,
       `# good/b.md\n${reviewYaml(4, 0, [0, 0])}`,
       [
-        '| document | pass | checks | failed | unsure |',
+        '| document | pass | checks | failed | borderline |',
         '|---|---|---|---|---|',
         '| good/a.md | false | 5 | 1 | 3 |',
         '| good/b.md | true | 4 | 0 | 0 |',

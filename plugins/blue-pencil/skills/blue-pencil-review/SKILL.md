@@ -10,7 +10,7 @@ description: >
 
 Blue Pencil reviews a markdown document against a **spec**: the rules a good document of its kind
 follows. A review returns every **check**: a value from 0 to 1, passing above 0.5. A check below 0.2 or
-above 0.8 is **decisive**; every other check is **unsure**, and one within 0.10 of 0.5 can flip on a
+above 0.8 is **decisive**; every other check is **borderline**, and one within 0.10 of 0.5 can flip on a
 second review. The `review` tool comes from the Blue Pencil MCP server, and each call is paid. When
 it refuses for the user's plan, follow "When the plan refuses" in [RESULTS.md](RESULTS.md).
 
@@ -35,18 +35,18 @@ text. Save the answer to a file beside the document.
 
 ## 3. Decide
 
-Read the result with [RESULTS.md](RESULTS.md). Every failed check and every unsure check gets one
+Read the result with [RESULTS.md](RESULTS.md). Every failed check and every borderline check gets one
 decision:
 
 | The check | Decision |
 |---|---|
 | Fails decisively, and the text breaks the rule | Fix the document, as RESULTS.md's "Acting on a failed check" says |
 | Within 0.10 of 0.5 | Review again before acting on it |
-| Unsure on both reviews | Name the part to the user as one to read themselves |
+| Borderline on both reviews | Name the part to the user as one to read themselves |
 | Fails on text that is right as written | Leave the text. The rule is wrong: write down its part path, its key and why the text is right, for the `blue-pencil-spec` skill to tune |
 | Is one of the "Known limits" in [SPEC.md](../blue-pencil-spec/SPEC.md) | Name the part to the user as one to read themselves |
 
-Done when every failed and every unsure check has its decision.
+Done when every failed and every borderline check has its decision.
 
 ## 4. Revise, when the user wants the document fixed
 
