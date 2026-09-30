@@ -12,7 +12,7 @@ metrics:  # score; bands: sure_fail < 0.2 <= unsure <= 0.8 < sure_pass
   wording: {score: 0.9, failed: 1, sure_fail: 1, unsure: 0, sure_pass: 8}
   tone: {score: 0.71, failed: 1, sure_fail: 1, unsure: 0, sure_pass: 1}
 parts:  # by spec path; each check by its spec key, a cascaded copy after the path it was written on: value; then every answer
-  whole_document:  # the whole document: the spec's top-level asserts and packages
+  whole_document:  # the whole document: the spec's top-level asserts, tone and packages
     passed:
       asserts.must_use.0: 0.97; used 0.97, not used 0.03
   frontmatter.owner:
@@ -100,7 +100,7 @@ Change the document in the part the path names, as the check's key and likeliest
 | `asserts.every_entry.<n>` | `not every entry` | Fix each entry that breaks the rule |
 | `asserts.must_use.<n>` | `not used` | Use the word in this part |
 | `asserts.must_not_use.<n>`, a banned-words item | `used` | Take the word out of this part's own text |
-| `asserts.should.<n>`, a tone or structure item | `mostly against`, `a few lapses` | Rewrite this part to follow the rule |
+| `asserts.should.<n>`, a `tone.<item>` or structure item | `mostly against`, `a few lapses` | Rewrite this part to follow the rule |
 
 A cascaded copy (`<path>.asserts.…`) is fixed in the part it is listed under, in that part's own text:
 the parts inside it are checked by their own copies. The rule itself is written on the part at

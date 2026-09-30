@@ -100,15 +100,15 @@ each with its likely cause.
 | A `should` unsure on grammar | The rule names the grammar without saying what it means | Say what it means, with an example (SPEC.md, "Content rules") |
 | An `every_entry` passing a bad entry | "Only" without its boundary | State the boundary (SPEC.md, "Content rules") |
 | Decisive and wrong on a known-good | The rule asks what this kind of document does not need to do, or sits on the wrong part | Reword it, move it to the part where it belongs, or turn it off |
-| A cascaded rule or package item wrong on a known-good, in one part | The rule does not fit that part | Turn it off there: `{text, off: true}`, or `"off"` in the part's `packages` |
+| A cascaded rule, tone item or package item wrong on a known-good, in one part | The rule does not fit that part | Turn it off there: `{text, off: true}`, or `"off"` for the item in the part's `tone` or `packages` |
 | Passes on a known-bad | No rule checks what the copy broke, or its rule is too loose to catch it | Add a rule, or make its words name the thing exactly |
 | Within 0.10 of 0.5 | The answers are split, or it is noise | Change the rule only when it is this close on two reviews: the next pass, or several examples in the same pass |
 
 ## What a spec can change
 
 A part's `name`, `description`, `present`, `comes`, `columns` and `language`; the words of its rules, and
-each rule's `cascade`, or turning it off below a part; which package option is chosen; an item turned off,
-or reworded, at the top or in a part. The questions each assertion asks, and the answers they allow, are
+each rule's `cascade`, or turning it off below a part; which tone or package option is chosen; an item
+turned off, or reworded, at the top or in a part; the items of a tone or package the spec declares. The questions each assertion asks, and the answers they allow, are
 fixed on the server: `catalog` shows them. SPEC.md's "Known limits" are limits of those questions: name
 a check that runs into one in your report, rather than tuning against it.
 

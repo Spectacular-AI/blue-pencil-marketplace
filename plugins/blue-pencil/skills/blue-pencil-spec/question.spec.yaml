@@ -12,8 +12,8 @@ description: >-
   One message an agent sends a user while working out with them what they want. It says where the work
   stands and what the agent took from the user's last answer, what raised the question, then asks one
   question the user can answer from what they know, knowing what the answer will change.
+tone: professional
 packages:
-  tone_and_language: {option: professional}
   banned_words: {option: default}
   writing_structure:
     option: default
@@ -88,10 +88,10 @@ children:
     description: >-
       a short follow-up on the user's last answer before the agent moves on, as one question in prose or
       a short list of questions; its heading starts "Quick question:" or "Quick questions:"
+    # The heading is short and the questions are brief; fragments in them are not a fault here. It
+    # restates the user's answer on purpose, which the "bottom-line" item counts against it.
+    tone: {items: {full-sentences: "off"}}
     packages:
-      # The heading is short and the questions are brief; fragments in them are not a fault here. It
-      # restates the user's answer on purpose, which the "bottom-line" item counts against it.
-      tone_and_language: {items: {full-sentences: "off"}}
       banned_words: {items: {bottom-line: "off"}}
     asserts:
       must_say:
