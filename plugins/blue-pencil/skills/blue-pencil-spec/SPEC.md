@@ -72,8 +72,9 @@ children:
 - `title`: the kind of document. `description`: the goal. Both are for readers of the spec: the review
   never checks them.
 - `define`: the spec's own tones and packages, declared by name; declaring turns nothing on (below).
-- `tone`: the voice the whole document reads in, `professional`, `casual`, or a tone the spec declares
-  (below). Left out, no tone is checked.
+- `tone`: the voice the whole document reads in, `professional`, `casual`, `marketing`, `social_media`,
+  or a tone the spec declares (below); `catalog` lists each built-in tone's items. Left out, no tone is
+  checked.
 - `packages`: preset rules, each package one kind of rule (below). A package left out is off.
 - `asserts`: rules about the whole document.
 - `children`: the parts of the document, each keyed by a name you choose.
