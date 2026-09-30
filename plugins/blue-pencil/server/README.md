@@ -11,8 +11,10 @@ reviews, made up most of its $90.70.
 
 **It scripts the transport, never the judgment.** Each tool reads the files and calls the hosted
 server's own tool with their text, and returns that answer unchanged. The only thing it adds is
-`review_files`' table, read from each review's YAML (its headline, and the `borderline` counts its
-metrics give). Nothing here decides what a check is worth.
+`review_files`' table, read from each review's YAML: its headline's `pass`, `checks`, `failed` and
+`borderline`. An answer from a server before check outcomes has no `borderline` in its headline, and
+splits `failed` at 0.5: its metrics' `borderline` counts are summed instead. Nothing here decides what
+a check is worth.
 
 ## Tools
 

@@ -9,10 +9,13 @@ description: >
 # Reviewing a document
 
 Blue Pencil reviews a markdown document against a **spec**: the rules a good document of its kind
-follows. A review returns every **check**: a value from 0 to 1, passing above 0.5. A check below 0.2 or
-above 0.8 is **decisive**; every other check is **borderline**, and one within 0.10 of 0.5 can flip on a
-second review. The `review` tool comes from the Blue Pencil MCP server, and each call is paid. When
-it refuses for the user's plan, follow "When the plan refuses" in [RESULTS.md](RESULTS.md).
+follows. A review returns every **check**: a value from 0 to 1, and its **outcome**, read at the two
+**edges** the review states. Below the lower edge it fails, above the upper it passes: both are
+**decisive**. Between them it is **borderline**, neither a pass nor a fail, and can come out otherwise
+on a second review; it does not fail the document. [RESULTS.md](RESULTS.md), "A check's outcome", says
+how to read one, in an older server's answer too. The `review` tool comes from the Blue Pencil MCP
+server, and each call is paid. When it refuses for the user's plan, follow "When the plan refuses" in
+[RESULTS.md](RESULTS.md).
 
 Every message to the user follows [WORDS.md](../blue-pencil-spec/WORDS.md): their words, never the
 tool's. A question to the user is written toward
@@ -40,9 +43,9 @@ decision:
 
 | The check | Decision |
 |---|---|
-| Fails decisively, and the text breaks the rule | Fix the document, as RESULTS.md's "Acting on a failed check" says |
-| Within 0.10 of 0.5 | Review again before acting on it |
-| Borderline on both reviews | Name the part to the user as one to read themselves |
+| Fails, and the text breaks the rule | Fix the document, as RESULTS.md's "Acting on a failed check" says |
+| Borderline | Review again before acting on it; the review after your fixes is that second review |
+| Borderline on two reviews | Name the part to the user as one to read themselves |
 | Fails on text that is right as written | Leave the text. The rule is wrong: write down its part path, its key and why the text is right, for the `blue-pencil-spec` skill to tune |
 | Is one of the "Known limits" in [SPEC.md](../blue-pencil-spec/SPEC.md) | Name the part to the user as one to read themselves |
 
@@ -53,8 +56,9 @@ Done when every failed and every borderline check has its decision.
 1. Change the document in the part each check names.
 2. Review again with the same spec, and decide again.
 
-Done when a review after your last edit passes every check, or each check still failing is written
-down with why the text is right as written.
+Done when a review after your last edit has no failed check, or each check still failing is written
+down with why the text is right as written; and each check borderline on two reviews is named for the
+user.
 
 ## 5. Report
 

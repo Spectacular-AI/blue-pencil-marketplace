@@ -1,10 +1,14 @@
 import { parse } from 'yaml';
 import { z } from 'zod';
 
-// The table after the reviews: per document, what its review's YAML says, read from its headline
-// (`review: {pass, checks, failed}`) and its metrics' `borderline` counts, which the server bands
-// itself (borderline: 0.2 to 0.8, both included).
-// Nothing is judged here.
+// The table after the reviews: per document, what its review's YAML says, read from its headline,
+// `review: {pass, score, checks, failed, borderline, passed, ms}`: each check's outcome counted at the
+// edges the answer states, and `pass` when none failed.
+//
+// An answer from a server before outcomes has `review: {pass, score, checks, failed, ms}`, whose
+// `failed` and `pass` split the checks at 0.5; its borderline count is then its metrics' `borderline`
+// counts summed, the band from 0.2 to 0.8, so it can count a check `failed` counts too. Both shapes are
+// read until the old one is gone from production. Nothing is judged here.
 
 /** One document's line: its counts, or the error its review answered with. */
 export type Row =
@@ -24,6 +28,8 @@ const Answer = z.object({
       pass: z.boolean(),
       checks: z.number().int(),
       failed: z.number().int(),
+      /** In answers since outcomes; left out, the metrics' counts are summed. */
+      borderline: z.number().int().optional(),
     })
     .optional(),
   metrics: z
@@ -52,9 +58,12 @@ export function rowOf(document: string, text: string, isError: boolean): Row {
     return { document, error: answer?.error?.code ?? 'error' };
   if (!answer?.review) return { document, error: 'unreadable answer' };
   const { pass, checks, failed } = answer.review;
-  let borderline = 0;
-  for (const metric of Object.values(answer.metrics ?? {}))
-    borderline += metric.borderline ?? 0;
+  let borderline = answer.review.borderline;
+  if (borderline === undefined) {
+    borderline = 0;
+    for (const metric of Object.values(answer.metrics ?? {}))
+      borderline += metric.borderline ?? 0;
+  }
   return { document, pass, checks, failed, borderline };
 }
 
