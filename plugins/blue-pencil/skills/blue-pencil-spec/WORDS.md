@@ -9,7 +9,7 @@ calls and your own notes.
 | check | "a rule's result" |
 | value, score | "a score from 0 to 1; a rule passes above 0.5" |
 | decisive | "sure" |
-| unsure | "not sure either way, so read that part yourself" |
+| borderline (`unsure` in older answers) | "not sure either way, so read that part yourself" |
 | part, part path | the heading's own name: "the Limits section" |
 | assertion, `must_say`, `should` | the rule itself, in a sentence: "it must say why the date moved" |
 | package, item | "a built-in list of [overused phrases]" |
