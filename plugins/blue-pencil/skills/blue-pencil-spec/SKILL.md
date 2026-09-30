@@ -148,12 +148,15 @@ Write the spec as [SPEC.md](SPEC.md) says, with the easy wins only:
 
 1. The goal is its `description`; the kind of document its `title`.
 2. Each thing the user agreed to is one rule, on the part it is about.
-3. A package only for what the user agreed to: call `catalog` once, and turn off the items that do not
+3. A tone for every spec: `professional` or `casual` when one fits how the user described the reader;
+   when neither does, the voice they described, declared as the spec's own tone ([SPEC.md](SPEC.md),
+   "Tone and packages"). Say which you chose, in the user's words, not the tool's.
+4. A package only for what the user agreed to: call `catalog` once, and turn off the items that do not
    fit this kind of document.
-4. For one document, a **light spec**: each fact a `must_say`; one `must_not_say` against claims beyond
+5. For one document, a **light spec**: each fact a `must_say`; one `must_not_say` against claims beyond
    those facts, naming them; a `should` for each thing the user named; no parts, unless the document
    has headings.
-5. Save it to a file, and call `check_spec` until it returns the spec.
+6. Save it to a file, and call `check_spec` until it returns the spec.
 
 Write each rule as [SPEC.md](SPEC.md)'s "An effective rule" says. How a rule is worded, which kind it is
 and which part it sits on are then yours to settle, by reviewing. Ask

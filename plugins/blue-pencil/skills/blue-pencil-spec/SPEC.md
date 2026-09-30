@@ -7,6 +7,7 @@ to and the question the review asks for it, and every package with its options a
 ```yaml
 title: Service runbook
 description: The engineer on call reads it during an incident and can restore the service without help.
+tone: professional
 packages:
   banned_words: {option: default}
 asserts:
@@ -70,6 +71,9 @@ children:
 
 - `title`: the kind of document. `description`: the goal. Both are for readers of the spec: the review
   never checks them.
+- `define`: the spec's own tones and packages, declared by name; declaring turns nothing on (below).
+- `tone`: the voice the whole document reads in, `professional`, `casual`, or a tone the spec declares
+  (below). Left out, no tone is checked.
 - `packages`: preset rules, each package one kind of rule (below). A package left out is off.
 - `asserts`: rules about the whole document.
 - `children`: the parts of the document, each keyed by a name you choose.
@@ -249,18 +253,51 @@ A rule that does not cascade is asked of its part alone, reading everything insi
   whether it goes further.
 - Cascades stop at the frontmatter: a rule reaches a field only when written on it.
 
-## Packages
+## Tone and packages
 
-A package is a preset of rules of one kind (`catalog` shows each package's `kind`): tone packages hold
-`should` rules, banned words `must_not_use`. Its rules are asked as if written in the top's `asserts`,
-so they cascade to every part.
+A package is a preset of rules of one kind (`catalog` shows each package's `kind`): banned words hold
+`must_not_use` rules, writing structure `should`. The tone is a package of `should` rules with a key of
+its own. Their rules are asked as if written in the top's `asserts`, so they cascade to every part; a
+block quote, someone else's words, is left out.
 
-- At the top: `<package>: {option: <option>}`, and `items: {<item>: "off"}` (quoted) to turn an item off
-  or `items: {<item>: <new wording>}` to reword it.
-- On a part: `packages: {<package>: {items: {<item>: "off" | <new wording>}}}` overrides an item there
-  and below. The package must be named at the top, and the item must belong to the option chosen there.
-- Every item is a check on every part: banned words' 45 items on a spec of six parts make over 250
+- The tone, at the top: `tone: professional`, or `tone: {option: <tone>, items: {<item>: "off" | <new
+  wording>}}` to turn an item off or reword it. Choose it for every spec: it is how the document sounds
+  to its reader.
+- A package, at the top: `packages: {<package>: {option: <option>}}`, with `items` as the tone's.
+- On a part: `tone: {items: {…}}` or `packages: {<package>: {items: {…}}}` overrides an item there and
+  below; `"off"` turns the whole tone or package off there and below. Only what the top turns on can be
+  overridden, and the item must belong to the option chosen there.
+- Every item is a check on every part: banned words' 49 items on a spec of six parts make over 250
   checks. Choose a package for what the goal needs, not by default.
+
+### Your own tone or package
+
+When no built-in fits, declare one under `define:`, then turn it on as a built-in:
+
+```yaml
+define:
+  tones:
+    team_voice:
+      items:
+        plain-words: uses everyday words, and a technical term only where it is the exact name of the thing
+        no-hype: contains no word that sells rather than describes, such as "powerful" or "seamless"
+  packages:
+    house_words:
+      kind: must_not_use
+      items:
+        synergy: the word "synergy" in any form
+tone: team_voice
+packages:
+  house_words: {option: default}
+```
+
+- A tone has `items` and an optional `label`; its rules are `should` rules.
+- A package has a `kind`, `items`, and an optional `label` and `skips` (`[quote]` to leave block quotes
+  out); it has one option, `default`.
+- A declared name equal to a built-in's replaces the built-in for this spec.
+- A package's name is lower-case words joined by underscores; item keys are lower-case words joined by
+  hyphens. `check_spec` refuses a name or key the review uses for itself, such as `should` or `exists`.
+- Write each item as a rule of its kind ("An effective rule", above).
 
 ## Paths and keys
 
@@ -279,6 +316,7 @@ check is named by its key:
 | `language` | the code block's `language` |
 | `asserts.<kind>.<n>` | the part's own `asserts.<kind>`, rule `n` counted from 0 |
 | `<path>.asserts.<kind>.<n>` | a cascaded copy of that rule, written on the part at `<path>` (`whole_document` for the top) |
+| `tone.<item>` | the tone's item, chosen at the top or overridden on this part or above |
 | `<package>.<item>` | the package item, chosen at the top or overridden on this part or above |
 
 ## Known limits
