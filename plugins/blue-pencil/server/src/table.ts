@@ -3,7 +3,7 @@ import { z } from 'zod';
 
 // The table after the reviews: per document, what its review's YAML says, read from its headline
 // (`review: {pass, checks, failed}`) and its metrics' `borderline` counts, which the server bands
-// itself (borderline: 0.2 to 0.8, both included; `unsure` in answers from servers before the rename).
+// itself (borderline: 0.2 to 0.8, both included).
 // Nothing is judged here.
 
 /** One document's line: its counts, or the error its review answered with. */
@@ -29,7 +29,7 @@ const Answer = z.object({
   metrics: z
     .record(
       z.string(),
-      z.object({ borderline: z.number().int(), unsure: z.number().int() }).partial(),
+      z.object({ borderline: z.number().int() }).partial(),
     )
     .optional(),
   error: z.object({ code: z.string() }).partial().optional(),
@@ -54,7 +54,7 @@ export function rowOf(document: string, text: string, isError: boolean): Row {
   const { pass, checks, failed } = answer.review;
   let borderline = 0;
   for (const metric of Object.values(answer.metrics ?? {}))
-    borderline += metric.borderline ?? metric.unsure ?? 0;
+    borderline += metric.borderline ?? 0;
   return { document, pass, checks, failed, borderline };
 }
 

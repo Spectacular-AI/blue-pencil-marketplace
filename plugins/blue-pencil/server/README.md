@@ -11,19 +11,18 @@ reviews, made up most of its $90.70.
 
 **It scripts the transport, never the judgment.** Each tool reads the files and calls the hosted
 server's own tool with their text, and returns that answer unchanged. The only thing it adds is
-`review_files`' table, read from each review's YAML (its headline, and the borderline counts its
-metrics give: `borderline`, or `unsure` in answers from servers before the rename). Nothing here
-decides what a check is worth.
+`review_files`' table, read from each review's YAML (its headline, and the `borderline` counts its
+metrics give). Nothing here decides what a check is worth.
 
 ## Tools
 
 - `review_files`: `spec` (a path; left out, each document is reviewed against a spec from its headings),
   `documents` (paths or globs), `format`, `save_to` (optional folder). Per document, a text block
-  `# <path>` followed by the hosted `review`'s YAML; last, a table of pass, checks, failed and borderline per
-  document, with a line for all when there are several. With `save_to`, each review's YAML is written
-  there as it returns (`<path without its extension>.review.yaml`) and the table as `table.md`. Reviews
-  run three at a time. The error flag is set when a path is refused, or when every review answered with
-  an error; a review's own error is its block, and `error: <code>` in its row.
+  `# <path>` followed by the hosted `review`'s YAML; last, a table of pass, checks, failed and borderline
+  per document, with a line for all when there are several. With `save_to`, each review's YAML is
+  written there as it returns (`<path without its extension>.review.yaml`) and the table as
+  `table.md`. Reviews run three at a time. The error flag is set when a path is refused, or when every
+  review answered with an error; a review's own error is its block, and `error: <code>` in its row.
 - `check_spec_file`: `spec`, a path. The hosted `check_spec`'s answer, unchanged.
 
 ## Rules

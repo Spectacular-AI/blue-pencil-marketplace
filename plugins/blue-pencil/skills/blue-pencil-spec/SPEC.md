@@ -364,9 +364,9 @@ Measured on the review's questions; a spec cannot fix these, only avoid them.
 - `present` on the frontmatter was borderline (.55 to .79) on two long notes that have it, and on many of
   their copies; the spec has nothing that changes it.
 - **Link syntax** (`[[note]]`, not `[text](file.md)`) is markup, not words: `must_use` of the wanted form
-  was borderline everywhere (.62 to .84), and naming the characters of the unwanted form borderline on right notes
-  (.55 to .79). `must_not_use` of the unwanted form on the list that holds the links failed a copy using
-  it (.09) and stayed borderline on right notes (.48 to .76). Read such a check as borderline.
+  was borderline everywhere (.62 to .84), and naming the characters of the unwanted form borderline on
+  right notes (.55 to .79). `must_not_use` of the unwanted form on the list that holds the links failed a
+  copy using it (.09) and stayed borderline on right notes (.48 to .76). Read such a check as borderline.
 - A rule on a frontmatter field reads only that field's value: word it so it stands on the value alone
   ("a value naming the kind of record", not "what the documented data is"). A field's exact value
   (`type: data-schema`) is not checked decisively either way (.22 to .97 over four kinds).
