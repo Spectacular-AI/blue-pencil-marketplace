@@ -148,8 +148,10 @@ Write the spec as [SPEC.md](SPEC.md) says, with the easy wins only:
 
 1. The goal is its `description`; the kind of document its `title`.
 2. Each thing the user agreed to is one rule, on the part it is about.
-3. A tone for every spec: `professional` or `casual` when one fits how the user described the reader;
-   when neither does, the voice they described, declared as the spec's own tone ([SPEC.md](SPEC.md),
+3. A tone for every spec: `professional`, `casual`, `marketing` (copy that sells to a reader with a
+   problem: plain claims, no hype) or `social_media` (a post in a feed, in the writer's own voice) when
+   one fits how the user described the reader; when none does, the voice they described, declared as the
+   spec's own tone ([SPEC.md](SPEC.md),
    "Tone and packages"). Say which you chose, in the user's words, not the tool's.
 4. A package only for what the user agreed to: call `catalog` once, and turn off the items that do not
    fit this kind of document.
