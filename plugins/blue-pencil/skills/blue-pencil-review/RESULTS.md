@@ -51,9 +51,8 @@ parts:  # by spec path; each check by its spec key, a cascaded copy after the pa
   each weighted by its rule's `weight` in the spec (1 unless written; [SPEC.md](../blue-pencil-spec/SPEC.md)); how many checks
   ran, how many failed, how long it took. A review with no checks scores 1.
 - `metrics`: one line per kind of check (`parts` for the container assertions, `meaning`, `wording`,
-  `tone`): its mean value, weighted as the document score is, how many failed, and how many were decisive fails (`sure_fail`), borderline
-  (`borderline`), and decisive passes (`sure_pass`). An older server's answer calls the borderline
-  band `unsure`, as the key and in the comment on `metrics`: read it as `borderline`.
+  `tone`): its mean value, weighted as the document score is, how many failed, and how many were
+  decisive fails (`sure_fail`), borderline (`borderline`), and decisive passes (`sure_pass`).
 
 ## A check's line
 

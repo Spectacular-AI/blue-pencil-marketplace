@@ -61,9 +61,9 @@ is badly wrong, not one that is wrong now and then").
    replace the part it concerns with text that fails it. If two such copies still pass, stop: the review
    infers the thing from the rest of the document. Count the check as wrong, and name it in your report
    as a limit of the question, not of your spec. A known-bad that fails but stays borderline counts as
-   right-but-borderline; a second copy that breaks the rule more plainly tells you whether the rule or the
-   copy is loose. When you split a rule in two, re-aim the known-bad copy written for it, so that each
-   copy still breaks one check.
+   right-but-borderline; a second copy that breaks the rule more plainly tells you whether the rule or
+   the copy is loose. When you split a rule in two, re-aim the known-bad copy written for it, so that
+   each copy still breaks one check.
 2. **Expected.** In one file beside the examples, not inside them, write down for each example which
    checks should fail: none on a known-good; the aimed check on a known-bad. A label inside a document
    is sent with it and tells the review the answer.
@@ -74,8 +74,8 @@ is badly wrong, not one that is wrong now and then").
    review: expected, value, decisive
    or not, right or not. Then the share of the listed checks that are both decisive and right (a missing
    part's own checks are not listed, so they are not counted).
-5. **Change** the spec for each check that is borderline or wrong, by its cause (below). Record each change:
-   what changed, why, and the values before and after.
+5. **Change** the spec for each check that is borderline or wrong, by its cause (below). Record each
+   change: what changed, why, and the values before and after.
 6. **Review again** every example, into a new folder, since a change can move checks on
    documents it was not aimed at, and go back to step 4.
 
@@ -85,8 +85,8 @@ than 5). When the set of examples changes between passes, compare the shares on 
 reviewed. If a check is waiting for its second close review when the stop rule is met, review that
 example once more before you stop. Then review the held-back documents and their known-bad copies, once, and report their share
 of checks decisive and right beside the share on the examples you tuned on: a held-back share well
-below the other means the spec fits its examples, not the kind. List the checks still borderline or wrong,
-each with its likely cause.
+below the other means the spec fits its examples, not the kind. List the checks still borderline or
+wrong, each with its likely cause.
 
 ## Causes, and what to change
 

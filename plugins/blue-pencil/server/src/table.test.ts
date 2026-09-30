@@ -1,29 +1,26 @@
 import { expect, test } from 'bun:test';
 import { formatTable, rowOf } from './table';
 
-/** A review's YAML as the hosted server writes it, its middle band under `band`. */
-const reviewYaml = (band: 'borderline' | 'unsure') =>
-  [
+test("a review's row is its headline's counts and its metrics' borderline checks summed", () => {
+  const yaml = [
     'review: {pass: false, checks: 23, failed: 5, ms: 1840}',
-    `metrics:  # score; bands: sure_fail < 0.2 <= ${band} <= 0.8 < sure_pass`,
-    `  parts: {score: 0.74, failed: 2, sure_fail: 2, ${band}: 0, sure_pass: 6}`,
-    `  meaning: {score: 0.61, failed: 1, sure_fail: 0, ${band}: 2, sure_pass: 2}`,
-    `  tone: {score: 0.71, failed: 1, sure_fail: 1, ${band}: 1, sure_pass: 1}`,
+    'metrics:  # score; bands: sure_fail < 0.2 <= borderline <= 0.8 < sure_pass',
+    '  parts: {score: 0.74, failed: 2, sure_fail: 2, borderline: 0, sure_pass: 6}',
+    '  meaning: {score: 0.61, failed: 1, sure_fail: 0, borderline: 2, sure_pass: 2}',
+    '  tone: {score: 0.71, failed: 1, sure_fail: 1, borderline: 1, sure_pass: 1}',
     'parts:  # by spec path',
     '  whole_document:  # the whole document',
     '    failed:',
     '      asserts.must_say.0: "0.31; not stated 0.69, stated 0.31"',
     '',
   ].join('\n');
-
-const row = { document: 'good/a.md', pass: false, checks: 23, failed: 5, borderline: 3 };
-
-test("a review's row is its headline's counts and its metrics' borderline checks summed", () => {
-  expect(rowOf('good/a.md', reviewYaml('borderline'), false)).toEqual(row);
-});
-
-test('an answer from a server before the rename is read from its unsure counts', () => {
-  expect(rowOf('good/a.md', reviewYaml('unsure'), false)).toEqual(row);
+  expect(rowOf('good/a.md', yaml, false)).toEqual({
+    document: 'good/a.md',
+    pass: false,
+    checks: 23,
+    failed: 5,
+    borderline: 3,
+  });
 });
 
 test('a review with no checks has no metrics', () => {
