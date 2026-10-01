@@ -147,8 +147,9 @@ Every part has a `type`, and is found in the document by what identifies it:
 
 A rule is **effective** when two things hold:
 
-- **The review decides it**: on a document whose answer is known, its check is decisive (below 0.2 or
-  above 0.8) and right, and a second review agrees.
+- **The review decides it**: on a document whose answer is known, its check is decisive (it fails or
+  passes, never borderline: [RESULTS.md](../blue-pencil-review/RESULTS.md), "A check's outcome") and
+  right, and a second review agrees.
 - **It holds for the kind**: it is right on documents of the kind that tuning never read, because it
   states something the user wants of every such document. The held-back documents of
   [TUNING.md](TUNING.md) measure this; a spec can pass the first test and fail this one.
@@ -322,7 +323,8 @@ check is named by its key:
 
 ## Known limits
 
-Measured on the review's questions; a spec cannot fix these, only avoid them.
+Measured on the review's questions; a spec cannot fix these, only avoid them. Most were measured when
+borderline ran from 0.2 to 0.8: read each value against the edges your review states.
 
 - A heading in near-synonyms of the `name` ("Upgrading" for "Migration") is found at 0.43 to 0.49: give
   `name` the heading writers use.
@@ -347,8 +349,8 @@ Measured on the review's questions; a spec cannot fix these, only avoid them.
   the rule lifts it only to the edge of sure (.80).
 - **The title heading and the lead** (the text under it before the first section) have no part: a spec
   for many documents cannot name a title that differs in each. A rule written at the top without
-  cascade reads the whole document, so a lead that leaves out what the body says still passes (three
-  copies at .50 to .54); scoping it in words ("in the opening paragraph, …") did not help. To aim a rule
+  cascade reads the whole document, so a lead that leaves out what the body says still gets through
+  (three copies at .50 to .54, borderline); scoping it in words ("in the opening paragraph, …") did not help. To aim a rule
   at the title and the lead, write it at the top with `cascade: true` and turn it off (`{text, off:
   true}`) on each part at the top: the top's copy then reads only the title and the text outside the
   named parts (on a whole spec, copies whose lead lost what one record is or its format failed at .11 to
@@ -357,7 +359,7 @@ Measured on the review's questions; a spec cannot fix these, only avoid them.
   schema.") reads as jargon (.50 to .69). For a rule about
   the title's form (a noun phrase, not a sentence), no kind was decisive both ways: `must_not_use` and
   `should` gave .39 to .43 on a title written as a sentence and .51 to .70 on right ones, and
-  `must_not_say` passed the sentence (.73 to .83). Name such checks in your report as limits.
+  `must_not_say` let the sentence through (.73 to .83). Name such checks in your report as limits.
 - Meaning: a description saying only when not to use a thing ("Not for code review") reads as half of
   saying when to use it, borderline either way.
 - Wording, a pattern: a space in the value and a capital inside it are missed; a leading capital and an
@@ -371,7 +373,7 @@ Measured on the review's questions; a spec cannot fix these, only avoid them.
 - A rule on a frontmatter field reads only that field's value: word it so it stands on the value alone
   ("a value naming the kind of record", not "what the documented data is"). A field's exact value
   (`type: data-schema`) is not checked decisively either way (.22 to .97 over four kinds).
-- Length and counts are not checked: the review does not count. A 251-character value passed "a value
-  longer than 150 characters" at .59 to .71 over four reviews. Leave such a rule out of the spec.
+- Length and counts are not checked: the review does not count. A 251-character value was borderline on
+  "a value longer than 150 characters", at .59 to .71 over four reviews. Leave such a rule out of the spec.
 - Tone on a part with nothing it applies to (a rule about sentences on a table) passes, at the edge of
   sure.

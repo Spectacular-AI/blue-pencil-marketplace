@@ -1,20 +1,25 @@
 # Reading a review
 
-A review is YAML: a headline, a score per metric, then every part by its part path, each check by its
-key in the spec ([SPEC.md](../blue-pencil-spec/SPEC.md), "Paths and keys"). An excerpt of a review against SPEC.md's example
-spec, every failed check shown and some passed ones left out:
+A review is YAML: a headline, the edges its checks were read at, a score per metric, then every part by
+its part path, each check by its key in the spec ([SPEC.md](../blue-pencil-spec/SPEC.md), "Paths and
+keys"). An excerpt of a review against SPEC.md's example spec, every failed and borderline check shown
+and some passed ones left out:
 
 ```yaml
-review: {pass: false, score: 0.71, checks: 23, failed: 5, ms: 1840}
-metrics:  # score; bands: sure_fail < 0.2 <= borderline <= 0.8 < sure_pass
-  parts: {score: 0.74, failed: 2, sure_fail: 2, borderline: 0, sure_pass: 6}
-  meaning: {score: 0.61, failed: 1, sure_fail: 0, borderline: 2, sure_pass: 2}
-  wording: {score: 0.9, failed: 1, sure_fail: 1, borderline: 0, sure_pass: 8}
-  tone: {score: 0.71, failed: 1, sure_fail: 1, borderline: 0, sure_pass: 1}
-parts:  # by spec path; each check by its spec key, a cascaded copy after the path it was written on: value; then every answer
+review: {pass: false, score: 0.71, checks: 23, failed: 5, borderline: 2, passed: 16, ms: 1840}
+strictness: {level: standard, fail: 0.4, pass: 0.8}  # each check fails below 0.4, passes above 0.8, and is borderline from 0.4 to 0.8
+metrics:  # score; then how many checks failed, were borderline and passed
+  parts: {score: 0.74, failed: 2, borderline: 1, passed: 5}
+  meaning: {score: 0.61, failed: 1, borderline: 1, passed: 2}
+  wording: {score: 0.9, failed: 1, borderline: 0, passed: 8}
+  tone: {score: 0.71, failed: 1, borderline: 0, passed: 1}
+parts:  # by spec path; its checks under failed, borderline and passed, each by its spec key, a cascaded copy after the path it was written on: value; then every answer
   whole_document:  # the whole document: the spec's top-level asserts, tone and packages
     passed:
       asserts.must_use.0: 0.97; used 0.97, not used 0.03
+  frontmatter:
+    borderline:
+      present: 0.62; found 0.62, not found 0.38
   frontmatter.owner:
     failed:
       asserts.must_say.0: 0.31; not stated 0.69, stated 0.31
@@ -25,8 +30,8 @@ parts:  # by spec path; each check by its spec key, a cascaded copy after the pa
     passed:
       present: 0.98; found 0.98, not found 0.02
   steps.step-list:
-    passed:
-      asserts.every_entry.0: 0.91; every entry 0.91, not every entry 0.09
+    borderline:
+      asserts.every_entry.0: 0.66; every entry 0.66, not every entry 0.34
   steps.restart:
     failed:
       language: 0.1; another 0.9, names it 0.1
@@ -45,14 +50,38 @@ parts:  # by spec path; each check by its spec key, a cascaded copy after the pa
       present: 0.08; found 0.92, not found 0.08
 ```
 
-## The headline and metrics
+## The headline, the edges and the metrics
 
-- `review`: whether every check passed; `score`, the document score, the mean of every check's value,
-  each weighted by its rule's `weight` in the spec (1 unless written; [SPEC.md](../blue-pencil-spec/SPEC.md)); how many checks
-  ran, how many failed, how long it took. A review with no checks scores 1.
+- `review`: `pass`, true when no check failed, a borderline one included; `score`, the document score,
+  the mean of every check's value, each weighted by its rule's `weight` in the spec (1 unless written;
+  [SPEC.md](../blue-pencil-spec/SPEC.md)); how many checks ran; how many `failed`, were `borderline`
+  and `passed`; how long it took. A review with no checks scores 1.
+- `strictness`: the review's two **edges**, named by their level, and the comment after them says how
+  to read them.
 - `metrics`: one line per kind of check (`parts` for the container assertions, `meaning`, `wording`,
-  `tone`): its mean value, weighted as the document score is, how many failed, and how many were
-  decisive fails (`sure_fail`), borderline (`borderline`), and decisive passes (`sure_pass`).
+  `tone`): its mean value, weighted as the document score is, and how many of its checks failed, were
+  borderline and passed.
+
+## A check's outcome
+
+Every check has one **outcome**, its value read at the edges on the `strictness` line (Standard's are
+0.4 and 0.8):
+
+| Outcome | Value | Means |
+|---|---|---|
+| `fail` | below the `fail` edge | The answers agree the part breaks the rule |
+| `borderline` | from the `fail` edge to the `pass` edge, both included | Neither a pass nor a fail: the review cannot call it |
+| `pass` | above the `pass` edge | The answers agree the part meets the rule |
+
+- A fail or a pass is **decisive**. A borderline check is not a call either way: a value moves by up to
+  about 0.10 between identical reviews, so one review in the middle is not trusted. It does not fail the
+  document.
+- The group a check is listed under, `failed`, `borderline` or `passed`, is its outcome. A value written
+  as 0.4 or 0.8 is rounded, and can sit on either side of the edge: its group says which.
+- Read a value against the edges the answer states, and those alone: 0.5 is not an edge.
+- The outcome is the value's alone. How likely the likeliest answer looks, or a confidence another tool
+  shows, never moves a check across an edge.
+- `catalog` lists the three outcomes, by their codes with their words, under `outcomes`.
 
 ## A check's line
 
@@ -65,9 +94,26 @@ when the tree puts them in that order; a column check locates the table, then ma
 columns to the names the spec gives, one answer group per column of the table, in its order. A check
 read from several answers takes the least certain of them.
 
-Within a part, `failed` comes before `passed`, each lowest first. The rule's words are not repeated:
-look them up in the spec by the part path and key. A checked part with no checks is left out; a part
-with any other status is always listed, with its `status`.
+Within a part, `failed` comes first, then `borderline`, then `passed`, each lowest first. The rule's
+words are not repeated: look them up in the spec by the part path and key. A checked part with no checks
+is left out; a part with any other status is always listed, with its `status`.
+
+## An answer from an older server
+
+Until the server is updated, `review` may answer in its older shape, with no `strictness` line:
+
+```yaml
+review: {pass: false, score: 0.71, checks: 23, failed: 5, ms: 1840}
+metrics:  # score; bands: sure_fail < 0.2 <= borderline <= 0.8 < sure_pass
+  meaning: {score: 0.61, failed: 1, sure_fail: 0, borderline: 2, sure_pass: 2}
+```
+
+Its edges are the bands its `metrics` comment names, 0.2 and 0.8: below 0.2 is a fail (`sure_fail`),
+0.2 to 0.8 borderline (`borderline`), above 0.8 a pass (`sure_pass`). Its `failed` and `passed` groups,
+the headline's `pass` and `failed`, and each metric's `failed` split the checks at 0.5 instead, so a
+check listed under `failed` at 0.31, or under `passed` at 0.62, is borderline. Read each check's
+outcome from its value at 0.2 and 0.8, as the table above does at the stated edges; the document has no
+failed check when no value is below 0.2. An older `catalog` lists the bands under `bands`.
 
 ## A part's status
 
@@ -75,12 +121,17 @@ Written only when it is not `checked`:
 
 | Status | Means | Its own checks |
 |---|---|---|
-| `checked` | Found, or the whole document | Listed, with no `present` check when the part is optional or conditional; a `forbidden` part found lists only its failed `present` |
-| `missing` | Not found, and that fails: it is required, or one of its conditions holds | Only its failed `present` or `present.when` |
-| `absent` | Not found, and that is fine: it is optional or forbidden, or none of its conditions holds | Only a passed `present` or `present.when`; an optional part's, none |
+| `checked` | Found, or the whole document | Listed, with no `present` check when the part is optional or conditional; a `forbidden` part found lists only its `present`, failed or borderline |
+| `missing` | Not found, where it should be: it is required, or one of its conditions holds | Only its `present` or `present.when`, failed or borderline |
+| `absent` | Not found, and that is fine: it is optional or forbidden, or none of its conditions holds | Only its `present` or `present.when`, passed or borderline; an optional part's, none |
 | `skipped` | Its parent was not found, so it was never looked for | None |
 
 The parts inside a part that is not found, or is found but forbidden, are `skipped`.
+
+Whether a part is found, and whether a condition holds, is the review's own yes or no, taken at 0.5 so
+it knows what to check next; the part's `present` check is then read at the edges like any other. So
+a part found at 0.62 is `checked`, its rules asked, while its `present` is borderline, as `frontmatter`
+is above.
 
 ## Acting on a failed check
 
@@ -108,7 +159,8 @@ the parts inside it are checked by their own copies. The rule itself is written 
 
 ## When to trust a value
 
-Act on a decisive value. Review again before acting on a value within 0.10 of 0.5.
+Act on a decisive check. A borderline one is not a call: review again before acting on it, and when it
+stays borderline, read the part against the rule yourself.
 
 ## The spec it used
 

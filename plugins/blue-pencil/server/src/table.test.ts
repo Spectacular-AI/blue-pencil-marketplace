@@ -1,7 +1,46 @@
 import { expect, test } from 'bun:test';
 import { formatTable, rowOf } from './table';
 
-test("a review's row is its headline's counts and its metrics' borderline checks summed", () => {
+test("a review's row is its headline's counts, borderline among them", () => {
+  // An excerpt: one metric left, so its borderline count differs from the headline's, which wins.
+  const yaml = [
+    'review: {pass: false, score: 0.71, checks: 23, failed: 5, borderline: 2, passed: 16, ms: 1840}',
+    'strictness: {level: standard, fail: 0.4, pass: 0.8}  # each check fails below 0.4, passes above 0.8, and is borderline from 0.4 to 0.8',
+    'metrics:  # score; then how many checks failed, were borderline and passed',
+    '  parts: {score: 0.74, failed: 2, borderline: 1, passed: 5}',
+    'parts:  # by spec path; its checks under failed, borderline and passed',
+    '  frontmatter:',
+    '    borderline:',
+    '      present: "0.62; found 0.62, not found 0.38"',
+    '',
+  ].join('\n');
+  expect(rowOf('good/a.md', yaml, false)).toEqual({
+    document: 'good/a.md',
+    pass: false,
+    checks: 23,
+    failed: 5,
+    borderline: 2,
+  });
+});
+
+test('a review with no checks, since outcomes', () => {
+  const yaml = [
+    'review: {pass: true, score: 1, checks: 0, failed: 0, borderline: 0, passed: 0, ms: 3}',
+    'strictness: {level: standard, fail: 0.4, pass: 0.8}  # each check fails below 0.4',
+    'metrics: {}',
+    'parts: {}',
+    '',
+  ].join('\n');
+  expect(rowOf('a.md', yaml, false)).toEqual({
+    document: 'a.md',
+    pass: true,
+    checks: 0,
+    failed: 0,
+    borderline: 0,
+  });
+});
+
+test("an older server's row is its headline's counts and its metrics' borderline checks summed", () => {
   const yaml = [
     'review: {pass: false, checks: 23, failed: 5, ms: 1840}',
     'metrics:  # score; bands: sure_fail < 0.2 <= borderline <= 0.8 < sure_pass',
@@ -23,7 +62,7 @@ test("a review's row is its headline's counts and its metrics' borderline checks
   });
 });
 
-test('a review with no checks has no metrics', () => {
+test("an older server's review with no checks has no metrics", () => {
   const yaml = 'review: {pass: true, checks: 0, failed: 0, ms: 3}\nmetrics: {}\nparts: {}\n';
   expect(rowOf('a.md', yaml, false)).toEqual({
     document: 'a.md',
