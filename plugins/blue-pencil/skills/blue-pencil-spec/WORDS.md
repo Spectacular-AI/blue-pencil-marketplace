@@ -13,6 +13,7 @@ calls and your own notes.
 | borderline | "not sure either way, so read that part yourself" |
 | edges, strictness | "how sure a result must be before it counts as failed or passed" |
 | part, part path | the heading's own name: "the Limits section" |
+| entry part, `<part path>.3` | the entry by its place and its words: "the third story in the list", "the step that starts with Restart" |
 | assertion, `must_say`, `should` | the rule itself, in a sentence: "it must say why the date moved" |
 | package, item | "a built-in list of [overused phrases]" |
 | known-good, known-bad, held back | "examples you're happy with", "examples with a fault", "examples I set aside to test on" |
