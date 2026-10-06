@@ -5,6 +5,7 @@ the spec it comes from.
 
 Tuning makes a spec's checks decisive and **right** on example documents: a check is right when it passes
 or fails as the known answer for that document says. A check is named by its part path and its key
+(an entry's by the part above and the entry's position, `steps.step-list.3`)
 together (`contacts.contact-table columns.required.phone`).
 
 - **known-good**: a document of this kind that meets the goal. Every check should pass.

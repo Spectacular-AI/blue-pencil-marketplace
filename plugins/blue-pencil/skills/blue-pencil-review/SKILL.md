@@ -46,7 +46,7 @@ decision:
 | Fails, and the text breaks the rule | Fix the document, as RESULTS.md's "Acting on a failed check" says |
 | Borderline | Review again before acting on it; the review after your fixes is that second review |
 | Borderline on two reviews | Name the part to the user as one to read themselves |
-| Fails on text that is right as written | Leave the text. The rule is wrong: write down its part path, its key and why the text is right, for the `blue-pencil-spec` skill to tune |
+| Fails on text that is right as written | Leave the text. The rule is wrong: write down its part path, its key and why the text is right, for the `blue-pencil-spec` skill to tune. For an entry part (`<part path>.3`), the rule lives on the part above: write that path, the key, and which entry |
 | Is one of the "Known limits" in [SPEC.md](../blue-pencil-spec/SPEC.md) | Name the part to the user as one to read themselves |
 
 Done when every failed and every borderline check has its decision.

@@ -158,9 +158,13 @@ So that the review decides it:
 
 - **One idea per rule**, stated outright, with what must not count named in the rule ("Content rules",
   below). A rule borderline on several documents usually holds two ideas or vague words.
-- **Ask of each part only what its own text shows.** An `every_entry` rule judges each entry of the list:
-  "follows from the user's last answer", an answer outside the list, did not catch an entry off the
-  subject.
+- **Ask of each part only what its own text shows.** An `every_entry` rule judges each entry of a list,
+  or each child section of a section, one at a time and alone: the entry sees nothing outside itself,
+  not even its heading. "Follows from the user's last answer", an answer outside the list, did not
+  catch an entry off the subject; "how this schema's data relates to it" had no "this schema" to read
+  and scored 0.05 to 0.62 on right entries however it was worded. A claim that needs the document's
+  context belongs on the part above, as a `must_say`; the per-entry rule keeps what an entry alone can
+  show, its form and its own words.
 - **Let the heading find the part.** A heading in other words for the same thing is found; a heading
   that names its topic instead of what the part is for ("Cost and success" for "What I noticed") was
   found in 1 of 3 good documents. Where headings must vary, fix their first words and let the rest vary
@@ -199,7 +203,7 @@ that part and everything inside it; at the top, the whole document.
 | `must_say` | Meaning: the part states it outright | What must be said, a noun phrase: "what the schema is for" | `must_not_say` |
 | `must_use` | Wording: the writer's own text contains a word or mark | The word with its nuance: '"leverage" used as a verb' | `must_not_use` |
 | `should` | Tone: how all the text reads, graded; one lapse fails | What the text does: "reads plainly, without jargon" | None: the rule's own words carry it |
-| `every_entry` | Every entry of a list, one by one (on a `list` only) | What each entry does, completing "every entry …": "start with a date" | None |
+| `every_entry` | Each entry of a `list` (its items) or of a `section` (its child sections), judged alone, each a result part of its own at `<part path>.<n>`; the part may then have no `children` of its own | What each entry does, completing "the entry …": "start with a date" | None |
 
 - **Meaning is stated outright, in the part it is written on.** Said elsewhere, or only implied, it
   fails. Put in the rule what must not count when a reader could take it for the thing: "when an agent
@@ -265,10 +269,18 @@ block quote, someone else's words, is left out.
 - The tone, at the top: `tone: professional`, or `tone: {option: <tone>, items: {<item>: "off" | <new
   wording>}}` to turn an item off or reword it. Choose it for every spec: it is how the document sounds
   to its reader.
-- A package, at the top: `packages: {<package>: {option: <option>}}`, with `items` as the tone's.
+- A package, at the top or on any part: `packages: {<package>: {option: <option>, apply: <where>}}`,
+  with `items` as the tone's. `apply` is `here_and_below` (the default: this part and every part
+  inside it), `here` (this part alone) or `entries` (each entry of this part, a list's items or a
+  section's child sections, asked alone with its own kind's question; the part then has no `children`
+  of its own). A choice on a part replaces the same package coming from above, there and below.
 - On a part: `tone: {items: {…}}` or `packages: {<package>: {items: {…}}}` overrides an item there and
-  below; `"off"` turns the whole tone or package off there and below. Only what the top turns on can be
-  overridden, and the item must belong to the option chosen there.
+  below; `"off"` turns the whole tone or package off there and below. An override reads the option
+  chosen nearest above it, the top's or a part's, and the item must belong to that option; under a
+  `here` choice nothing reaches the parts below, so an override there is refused.
+- Rules for each story, each ticket, each entry, written once: declare a package of kind
+  `every_entry` (below) and turn it on at the list or section that holds them with `apply: entries`.
+  Each story then gets its own result part with one check per item.
 - Every item is a check on every part: banned words' 49 items on a spec of six parts make over 250
   checks. Choose a package for what the goal needs, not by default.
 
@@ -297,6 +309,8 @@ packages:
 - A package has a `kind`, `items`, and an optional `label` and `skips` (`[quote]` to leave block quotes
   out); it has one option, `default`.
 - A declared name equal to a built-in's replaces the built-in for this spec.
+- A package of kind `every_entry` turned on with `apply: entries` is asked of each entry alone:
+  `packages: {user_story: {option: default, apply: entries}}` on the list of stories.
 - A package's name is lower-case words joined by underscores; item keys are lower-case words joined by
   hyphens. `check_spec` refuses a name or key the review uses for itself, such as `should` or `exists`.
 - Write each item as a rule of its kind ("An effective rule", above).
@@ -319,7 +333,13 @@ check is named by its key:
 | `asserts.<kind>.<n>` | the part's own `asserts.<kind>`, rule `n` counted from 0 |
 | `<path>.asserts.<kind>.<n>` | a cascaded copy of that rule, written on the part at `<path>` (`whole_document` for the top) |
 | `tone.<item>` | the tone's item, chosen at the top or overridden on this part or above |
-| `<package>.<item>` | the package item, chosen at the top or overridden on this part or above |
+| `<package>.<item>` | the package item, chosen at the top or at a part above (`packages.<package>.option` there), or overridden on this part or above |
+
+An **entry part** is a result part the review adds under a part with per-entry rules, one per entry,
+at `<part path>.<n>`, `n` the entry's position from 1 (`steps.step-list.3`): it holds that entry's
+checks, keyed as the rule on the part above (`steps.step-list.asserts.every_entry.0`, or
+`<package>.<item>` for a package applied to entries). A part found but not located is `unlocated`
+(the review skill's RESULTS.md): its per-entry rules were not asked.
 
 ## Known limits
 
@@ -335,7 +355,7 @@ borderline ran from 0.2 to 0.8: read each value against the edges your review st
 - An optional part that is absent reports nothing, and one found by mistake has its rules checked
   against text the document lacks: neither shows as a failed check. An optional section is found when
   its `description` fits what it holds ("worked examples" over one sentence: .66 to .68).
-- A table's rows are not entries: `every_entry` is for lists, and no assertion asks decisively about
+- A table's rows are not entries: `every_entry` is for lists and sections, and no assertion asks decisively about
   every row. Asked of each row, measured on field tables: a cell rule ("the Required cell is yes, no, or
   a condition") let "sometimes", "always" and "maybe" through (.21 to .46); a unit rule for the rows that
   measure something sat near .5; a mark in one column (field names in backticks) caught a whole bad

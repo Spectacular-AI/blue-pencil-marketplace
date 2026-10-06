@@ -29,9 +29,12 @@ parts:  # by spec path; its checks under failed, borderline and passed, each by 
       whole_document.asserts.must_not_use.0: 0.08; used 0.92, not used 0.08
     passed:
       present: 0.98; found 0.98, not found 0.02
-  steps.step-list:
+  steps.step-list.1:
+    passed:
+      steps.step-list.asserts.every_entry.0: 0.93; followed 0.93, not followed 0.07
+  steps.step-list.2:
     borderline:
-      asserts.every_entry.0: 0.66; every entry 0.66, not every entry 0.34
+      steps.step-list.asserts.every_entry.0: 0.66; followed 0.66, not followed 0.34
   steps.restart:
     failed:
       language: 0.1; another 0.9, names it 0.1
@@ -125,6 +128,11 @@ Written only when it is not `checked`:
 | `missing` | Not found, where it should be: it is required, or one of its conditions holds | Only its `present` or `present.when`, failed or borderline |
 | `absent` | Not found, and that is fine: it is optional or forbidden, or none of its conditions holds | Only its `present` or `present.when`, passed or borderline; an optional part's, none |
 | `skipped` | Its parent was not found, so it was never looked for | None |
+| `unlocated` | Found, but the review could not say which list or section it is, so its per-entry rules were not asked | Its `present`; no entry parts |
+
+An **entry part**, `type: entry`, sits under a part with per-entry rules, one per item of a list or
+child section of a section, at `<part path>.<n>`: it is always `checked`, and its checks are keyed by
+the rule on the part above.
 
 The parts inside a part that is not found, or is found but forbidden, are `skipped`.
 
@@ -148,7 +156,7 @@ Change the document in the part the path names, as the check's key and likeliest
 | `language` | `another` | Name the language after the opening fence |
 | `asserts.must_say.<n>` | `not stated` | State it outright in this part |
 | `asserts.must_not_say.<n>` | `stated` | Take it out of this part |
-| `asserts.every_entry.<n>` | `not every entry` | Fix each entry that breaks the rule |
+| `<part path>.asserts.every_entry.<n>`, under an entry part | `not followed` | Fix this entry; the check names it |
 | `asserts.must_use.<n>` | `not used` | Use the word in this part |
 | `asserts.must_not_use.<n>`, a banned-words item | `used` | Take the word out of this part's own text |
 | `asserts.should.<n>`, a `tone.<item>` or structure item | `mostly against`, `a few lapses` | Rewrite this part to follow the rule |
