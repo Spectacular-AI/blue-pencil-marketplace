@@ -69,7 +69,8 @@ is badly wrong, not one that is wrong now and then").
    checks should fail: none on a known-good; the aimed check on a known-bad. A label inside a document
    is sent with it and tells the review the answer.
 3. **Review** every example with the same spec: one `review` call per example, with its text and the
-   spec's text. Save each answer to a file in a folder for this pass (`reviews/pass-1`) as it returns.
+   spec's text; or, when the session says Blue Pencil fast mode is on, the command it gives, with every
+   example's path and the spec's path after `--spec`. Save each answer to a file in a folder for this pass (`reviews/pass-1`) as it returns.
 4. **Table.** From each saved review's headline and metrics, list each example's checks, failed and
    borderline; start from it to see which examples to read. Then per example, per check, from its saved
    review: expected, value, outcome ([RESULTS.md](../blue-pencil-review/RESULTS.md), "A check's
@@ -116,7 +117,8 @@ a check that runs into one in your report, rather than tuning against it.
 
 ## Cost
 
-Each review is paid, and costs you more than it costs the server. Through `review`, you write the whole
+Each review is paid, and costs you more than it costs the server. With fast mode on, the script sends
+the files and you write only the command. Through `review`, you write the whole
 document and the spec as its arguments: one pass over 47 examples of about 2,300 tokens each, with a
 spec of 1,900, wrote about 200,000 tokens and read back 125,000, and five such passes cost far more than
 the reviews. So:

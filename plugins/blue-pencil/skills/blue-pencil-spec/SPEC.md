@@ -355,9 +355,9 @@ An **entry part** is a result part the review adds under a part with per-entry r
 at `<part path>.<n>`, `n` the entry's position from 1 (`steps.step-list.3`): it holds that entry's
 checks, keyed as the rule on the part above (`steps.step-list.asserts.every_entry.0`, or
 `<package>.<item>` for a package applied to entries). A list found but not located is `unlocated` (the review skill's RESULTS.md): its per-entry rules were
-not asked. A check from a rule with `references` ends with the parts it read (`reads operations.rollback
-(Rollback)`); a rule whose referenced part was not found is listed under its part's `unasked`, with each
-part it reads and that part's status, and has no check.
+not asked. A check from a rule with `references` lists the parts it read under `reads`
+(`reads: [{path: operations.rollback, label: Rollback}]`); a rule whose referenced part was not found
+is listed under its part's `unasked`, with each part it reads and that part's status, and has no check.
 
 ## Known limits
 

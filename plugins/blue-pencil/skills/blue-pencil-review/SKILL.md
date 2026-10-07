@@ -13,7 +13,7 @@ follows. A review returns every **check**: a value from 0 to 1, and its **outcom
 **edges** the review states. Below the lower edge it fails, above the upper it passes: both are
 **decisive**. Between them it is **borderline**, neither a pass nor a fail, and can come out otherwise
 on a second review; it does not fail the document. [RESULTS.md](RESULTS.md), "A check's outcome", says
-how to read one, in an older server's answer too. The `review` tool comes from the Blue Pencil MCP
+how to read one, and "An answer from an older server" how to read an older answer. The `review` tool comes from the Blue Pencil MCP
 server, and each call is paid. When it refuses for the user's plan, follow "When the plan refuses" in
 [RESULTS.md](RESULTS.md).
 
@@ -33,8 +33,13 @@ Done when you hold a spec's text, or have chosen the first look.
 
 ## 2. Review
 
-Call `review` with the document's text exactly as it is on disk, `format` `markdown`, and the spec's
-text. Save the answer to a file beside the document.
+| The session says | Review with |
+|---|---|
+| Blue Pencil fast mode is on | The command it gives, the document's path, the spec's path after `--spec`, and `--outcomes fail,borderline`. The script sends the file itself, saves the review's YAML beside the document, and prints a table naming that file: read the YAML from it ([RESULTS.md](RESULTS.md), "Fast mode's table") |
+| Nothing of fast mode | `review`, with the document's text exactly as it is on disk, `format` `markdown`, the spec's text, and `outcomes` `[fail, borderline]`. Save the answer to a file beside the document |
+
+Listing only the failed and borderline checks keeps the answer short; its headline still counts every
+check ([RESULTS.md](RESULTS.md), "Asking for less, or more").
 
 ## 3. Decide
 
@@ -54,11 +59,13 @@ Done when every failed and every borderline check has its decision.
 ## 4. Revise, when the user wants the document fixed
 
 1. Change the document in the part each check names.
-2. Review again with the same spec, and decide again.
+2. Review again with the same spec, and decide again. Through `review`, when the document is long and
+   you changed a few of its sections, review just those sections against a cut of the spec, as
+   [FRAGMENTS.md](FRAGMENTS.md) says.
 
-Done when a review after your last edit has no failed check, or each check still failing is written
-down with why the text is right as written; and each check borderline on two reviews is named for the
-user.
+Done when a review of the whole document after your last edit has no failed check, or each check still
+failing is written down with why the text is right as written; and each check borderline on two
+reviews is named for the user.
 
 ## 5. Report
 

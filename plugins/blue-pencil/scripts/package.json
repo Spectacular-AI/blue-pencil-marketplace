@@ -1,21 +1,20 @@
 {
-  "name": "blue-pencil-files",
+  "name": "blue-pencil-scripts",
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "bun build src/main.ts --target=node --format=esm --minify --outfile=dist/blue-pencil-files.mjs",
+    "build": "bun build src/main-review.ts --target=node --format=esm --minify --outfile=review.mjs && bun build src/main-mode.ts --target=node --format=esm --minify --outfile=mode.mjs",
     "test": "bun test",
     "typecheck": "tsc --noEmit",
     "check": "tsc --noEmit && bun test"
   },
   "devDependencies": {
-    "@modelcontextprotocol/client": "2.1.0",
-    "@modelcontextprotocol/server": "2.1.0",
     "@types/bun": "1.3.14",
     "@types/node": "20.19.43",
+    "@types/picomatch": "4.0.3",
+    "picomatch": "4.0.7",
     "tinyglobby": "0.2.17",
     "typescript": "5.9.3",
-    "yaml": "2.9.1",
-    "zod": "4.6.5"
+    "yaml": "2.9.1"
   }
 }
