@@ -35,8 +35,11 @@ Done when you hold a spec's text, or have chosen the first look.
 
 | The session says | Review with |
 |---|---|
-| Blue Pencil fast mode is on | The command it gives, the document's path, and the spec's path after `--spec`. The script sends the file itself, saves the review's YAML beside the document, and prints a table naming that file: read the YAML from it ([RESULTS.md](RESULTS.md), "Fast mode's table") |
-| Nothing of fast mode | `review`, with the document's text exactly as it is on disk, `format` `markdown`, and the spec's text. Save the answer to a file beside the document |
+| Blue Pencil fast mode is on | The command it gives, the document's path, the spec's path after `--spec`, and `--outcomes fail,borderline`. The script sends the file itself, saves the review's YAML beside the document, and prints a table naming that file: read the YAML from it ([RESULTS.md](RESULTS.md), "Fast mode's table") |
+| Nothing of fast mode | `review`, with the document's text exactly as it is on disk, `format` `markdown`, the spec's text, and `outcomes` `[fail, borderline]`. Save the answer to a file beside the document |
+
+Listing only the failed and borderline checks keeps the answer short; its headline still counts every
+check ([RESULTS.md](RESULTS.md), "Asking for less, or more").
 
 ## 3. Decide
 
