@@ -158,13 +158,12 @@ So that the review decides it:
 
 - **One idea per rule**, stated outright, with what must not count named in the rule ("Content rules",
   below). A rule borderline on several documents usually holds two ideas or vague words.
-- **Ask of each part only what its own text shows.** An `every_entry` rule judges each entry of a list,
-  or each child section of a section, one at a time and alone: the entry sees nothing outside itself,
-  not even its heading. "Follows from the user's last answer", an answer outside the list, did not
-  catch an entry off the subject; "how this schema's data relates to it" had no "this schema" to read
-  and scored 0.05 to 0.62 on right entries however it was worded. A claim that needs the document's
-  context belongs on the part above, as a `must_say`; the per-entry rule keeps what an entry alone can
-  show, its form and its own words.
+- **Ask of each part what its own text shows, and name any other part it needs.** An `every_entry`
+  rule judges each entry of a list, or each child section of a section, one at a time and alone: the
+  entry sees nothing outside itself, not even its heading. A rule that needs another part, an entry's
+  match in another section or a list checked against a section, names that part in `references`
+  ("Content rules", below); without it, the part is not there to read: "follows from the user's last
+  answer", an answer outside the list, did not catch an entry off the subject.
 - **Let the heading find the part.** A heading in other words for the same thing is found; a heading
   that names its topic instead of what the part is for ("Cost and success" for "What I noticed") was
   found in 1 of 3 good documents. Where headings must vary, fix their first words and let the rest vary
@@ -208,11 +207,28 @@ that part and everything inside it; at the top, the whole document.
 - **Meaning is stated outright, in the part it is written on.** Said elsewhere, or only implied, it
   fails. Put in the rule what must not count when a reader could take it for the thing: "when an agent
   should use the skill, not only what the skill does"; "a field marked deprecated or to be removed".
-- **Two parts agreeing is one rule, on a part that holds both**: the top, when they are sibling
-  sections, since a rule on a section reads that section alone. Name the comparison in the rule: "each
-  amount the Summary names, with the value the table of fields gives it". As `must_say` it also fails
-  when the Summary names no amount; as `must_not_say` of a mismatch ("an amount in the Summary that
-  differs from the one the table of fields gives") it passes when there is nothing to compare.
+- **A rule that compares its part with another part references it**: `references` lists the spec
+  paths of the parts it reads, and the review asks the rule of its own part (each entry, for
+  `every_entry`) with each referenced part beside it, everything inside it included. Name the other part
+  in the rule by its heading, and bound the match to the thing compared:
+
+  ```yaml
+  risks:
+    type: section
+    name: Risks
+    asserts:
+      every_entry:
+        - text: "have a step in Rollback that undoes or limits this risk itself: a step about another risk does not count"
+          references: [operations.rollback]
+  ```
+
+  Unbounded ("a step that undoes or limits it"), a step about another risk counted: three entries
+  without their own step passed at .69 to .74; bounded, every entry met the bar. Write it on a section, a
+  list or an entry rule, and reference a section or a list: `check_spec` refuses a reference to a table,
+  a code block, a quote, a field or the frontmatter, and one on a rule written there. It warns on a
+  reference to the rule's own part or a part inside it (its own text already holds it), on a referenced
+  part that may be absent (the rule is then not asked, and the review lists it as not asked), and on a
+  rule of a kind other than `must_say` and `every_entry`, whose comparison is not measured.
 - **Wording names every form and each mark by its character**: '"seamless" in any form, such as
   "seamlessly"' (otherwise an adverb is not read as its adjective); 'an exclamation mark ("!")'. A word
   inside code, or in someone else's quoted words, is not the writer's own and does not count; a table
@@ -228,8 +244,8 @@ that part and everything inside it; at the top, the whole document.
 - One thing per rule, in words a reader could check against the text alone. A rule listing
   alternatives passes when any one of them is met, so list only alternatives each of which is enough on
   its own, as the instances in a definition are.
-- A rule is its text, or `{text, cascade}`, or `{text, weight}`, or `{text, off: true}` (below); `cascade`
-  and `weight` combine. `weight` is a number above 0, 1 unless written: it weights the rule's checks in the
+- A rule is its text, or `{text, cascade}`, or `{text, weight}`, or `{text, references}`, or `{text, off:
+  true}` (below); `cascade`, `weight` and `references` combine. `weight` is a number above 0, 1 unless written: it weights the rule's checks in the
   document score, the weighted mean of every check's value. Only a content rule has one; presence, order,
   columns, language and package items weigh 1. A cascaded copy carries its rule's weight, and a rule
   written again below replaces it. Keep every weight at 1 until the spec is tuned: a weight changes the
@@ -338,17 +354,23 @@ check is named by its key:
 An **entry part** is a result part the review adds under a part with per-entry rules, one per entry,
 at `<part path>.<n>`, `n` the entry's position from 1 (`steps.step-list.3`): it holds that entry's
 checks, keyed as the rule on the part above (`steps.step-list.asserts.every_entry.0`, or
-`<package>.<item>` for a package applied to entries). A part found but not located is `unlocated`
-(the review skill's RESULTS.md): its per-entry rules were not asked.
+`<package>.<item>` for a package applied to entries). A list found but not located is `unlocated` (the review skill's RESULTS.md): its per-entry rules were
+not asked. A check from a rule with `references` ends with the parts it read (`reads operations.rollback
+(Rollback)`); a rule whose referenced part was not found is listed under its part's `unasked`, with each
+part it reads and that part's status, and has no check.
 
 ## Known limits
 
 Measured on the review's questions; a spec cannot fix these, only avoid them. Most were measured when
 borderline ran from 0.2 to 0.8: read each value against the edges your review states.
 
-- A heading in near-synonyms of the `name` ("Upgrading" for "Migration") is found at 0.43 to 0.49: give
-  `name` the heading writers use.
-- Two sections that fit one part, or two with the same heading, leave the part's checks borderline.
+- A section is matched to its part by two questions and a judge between them: on the measured lab set
+  it found all 15 near-synonym headings and all 8 sections that share a heading. A section that holds a piece of a
+  part inside a section about something else (a fields table inside "Summary") is taken for that part,
+  .33 where it should be absent: give a part its own heading in the documents.
+- A rule with `references`: a near miss on the whole part (two steps for one risk, none for another)
+  stays borderline (.61), and matches written in another order sit at the edge of sure (.78). A
+  cascading copy of such a rule reads its whole section, the parts inside included.
 - "Comes before" on a part that is absent can still pass; read it beside the part's `present`.
 - `comes: first`, a spec with only `forbidden` columns, a document with many tables, an optional part's
   own rules, and large documents are not measured yet.
