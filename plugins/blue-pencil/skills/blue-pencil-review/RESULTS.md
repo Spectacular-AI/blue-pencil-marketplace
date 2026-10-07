@@ -128,7 +128,7 @@ Written only when it is not `checked`:
 | `missing` | Not found, where it should be: it is required, or one of its conditions holds | Only its `present` or `present.when`, failed or borderline |
 | `absent` | Not found, and that is fine: it is optional or forbidden, or none of its conditions holds | Only its `present` or `present.when`, passed or borderline; an optional part's, none |
 | `skipped` | Its parent was not found, so it was never looked for | None |
-| `unlocated` | Found, but the review could not say which list or section it is, so its per-entry rules were not asked | Its `present`; no entry parts |
+| `unlocated` | Found, but the review could not say which list it is, so its per-entry rules were not asked; or a part another rule reads was found but not placed | Its `present`; no entry parts |
 
 An **entry part**, `type: entry`, sits under a part with per-entry rules, one per item of a list or
 child section of a section, at `<part path>.<n>`: it is always `checked`, and its checks are keyed by
@@ -160,6 +160,11 @@ Change the document in the part the path names, as the check's key and likeliest
 | `asserts.must_use.<n>` | `not used` | Use the word in this part |
 | `asserts.must_not_use.<n>`, a banned-words item | `used` | Take the word out of this part's own text |
 | `asserts.should.<n>`, a `tone.<item>` or structure item | `mostly against`, `a few lapses` | Rewrite this part to follow the rule |
+
+A check that ends `reads <path> (<label>)` compares this part with the part it read: fix whichever of
+the two the rule's likeliest answer points to, often the part read (add the step, the test). A rule
+listed under `unasked` was not asked because a part it reads is `missing`, `absent` or `unlocated`, as
+its line says: add that part, and the rule is asked on the next review.
 
 A cascaded copy (`<path>.asserts.…`) is fixed in the part it is listed under, in that part's own text:
 the parts inside it are checked by their own copies. The rule itself is written on the part at
