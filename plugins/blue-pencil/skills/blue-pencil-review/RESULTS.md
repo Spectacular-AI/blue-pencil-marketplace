@@ -214,8 +214,9 @@ answers the spec itself, ready to save.
 | `request_invalid` | The call itself is malformed; `path` may name the argument | Fix the call |
 | `document_too_large` | The document is over the size limit; `limit` and `estimate` are in tokens | Review it in parts, as [FRAGMENTS.md](FRAGMENTS.md) says |
 | `review_failed` | The review did not finish | Try once more |
+| `rate_limited` | Past your account's limit on reviews | Wait a minute, then call again |
 
-An argument that is missing or of the wrong type (no `format`, a spec sent as an object, not YAML text) is
+An argument that is missing or of the wrong type (no `format`, a spec that is neither text nor a mapping) is
 refused before the tool runs, with the error flag set and a plain-text message naming the argument: fix
 that argument and call again.
 
@@ -233,10 +234,11 @@ YAML, the same YAML `review` answers: read its failed and borderline checks ther
 | `scope_required` | The key lacks the `review` scope | Tell the user to make a key with it at https://slop-or-not.ai/keys |
 | `unauthorized` | The key is wrong or revoked | Tell the user; review through `review` |
 | `rate_limited` | Past the key's limit, after one retry | Wait a minute, then run the script again |
-| `old_server`, `no_answer`, `unreadable_answer`, `unsupported_media_type` | The server could not give a review | Review through `review` |
+| `old_server`, `no_answer`, `unreadable_answer`, `unexpected_answer`, `unsupported_media_type`, `http_<status>` | The server could not give a review | Review through `review` |
 
 The script refuses before any review, and exits 2, when it finds no key, when the key is in a file git
-tracks, or when a path leads outside the project: review through `review`, and tell the user what it
+tracks, when a path leads outside the project, when the spec is not YAML or JSON, or when an option is
+wrong: review through `review`, and tell the user what it
 said.
 
 ## When the plan refuses

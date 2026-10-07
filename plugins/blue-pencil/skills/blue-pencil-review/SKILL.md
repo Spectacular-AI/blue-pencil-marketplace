@@ -13,7 +13,7 @@ follows. A review returns every **check**: a value from 0 to 1, and its **outcom
 **edges** the review states. Below the lower edge it fails, above the upper it passes: both are
 **decisive**. Between them it is **borderline**, neither a pass nor a fail, and can come out otherwise
 on a second review; it does not fail the document. [RESULTS.md](RESULTS.md), "A check's outcome", says
-how to read one, in an older server's answer too. The `review` tool comes from the Blue Pencil MCP
+how to read one, and "An answer from an older server" how to read an older answer. The `review` tool comes from the Blue Pencil MCP
 server, and each call is paid. When it refuses for the user's plan, follow "When the plan refuses" in
 [RESULTS.md](RESULTS.md).
 

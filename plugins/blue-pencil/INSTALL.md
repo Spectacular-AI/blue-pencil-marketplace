@@ -86,5 +86,5 @@ In a Claude Code cloud environment:
 The script, `scripts/review.mjs`, takes `--output yaml|json`, `--detail compact|full`,
 `--outcomes fail,borderline,pass`, `--echo-spec auto|always|never` and `--staged`; `scripts/README.md`
 says what each does. With `--staged` it reviews what git's index holds, not the disk, so a project can
-run it as its own pre-commit hook; with `--output json` its stdout is one JSON row per document, whose
+run it as its own pre-commit hook; with `--output json` its stdout is one JSON array, a row per document, whose
 `pass` the hook reads (the exit code says only whether every review was answered).
