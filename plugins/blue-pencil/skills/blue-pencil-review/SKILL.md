@@ -33,8 +33,10 @@ Done when you hold a spec's text, or have chosen the first look.
 
 ## 2. Review
 
-Call `review` with the document's text exactly as it is on disk, `format` `markdown`, and the spec's
-text. Save the answer to a file beside the document.
+| The session says | Review with |
+|---|---|
+| Blue Pencil fast mode is on | The command it gives, the document's path, and the spec's path after `--spec`. The script sends the file itself, saves the review's YAML beside the document, and prints a table naming that file: read the YAML from it ([RESULTS.md](RESULTS.md), "Fast mode's table") |
+| Nothing of fast mode | `review`, with the document's text exactly as it is on disk, `format` `markdown`, and the spec's text. Save the answer to a file beside the document |
 
 ## 3. Decide
 
@@ -54,8 +56,8 @@ Done when every failed and every borderline check has its decision.
 ## 4. Revise, when the user wants the document fixed
 
 1. Change the document in the part each check names.
-2. Review again with the same spec, and decide again. When the document is long and you changed a few
-   of its sections, review just those sections against a cut of the spec, as
+2. Review again with the same spec, and decide again. Through `review`, when the document is long and
+   you changed a few of its sections, review just those sections against a cut of the spec, as
    [FRAGMENTS.md](FRAGMENTS.md) says.
 
 Done when a review of the whole document after your last edit has no failed check, or each check still

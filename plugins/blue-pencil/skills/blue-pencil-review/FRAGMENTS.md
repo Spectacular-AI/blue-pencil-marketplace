@@ -10,6 +10,7 @@ answer, the last review of the whole document does.
 
 | You are about to | Review |
 |---|---|
+| Review with fast mode on | The whole document, with the script: it sends the file, not your text |
 | Review for the first time, or for the last time before you report | The whole document against the whole spec |
 | Review again after changing a few sections of a long document | A fragment of those sections against a cut |
 | Review on a plan that refuses a spec (`plan_required`) | The whole document: a fragment needs its cut |

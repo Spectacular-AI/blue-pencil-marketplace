@@ -6,7 +6,7 @@
     {
       "name": "blue-pencil",
       "source": "./plugins/blue-pencil",
-      "description": "Define what a good document is as a spec, review markdown documents against it and revise them until they pass: the Blue Pencil MCP server and two skills."
+      "description": "Define what a good document is as a spec, review markdown documents against it and revise them until they pass: the Blue Pencil MCP server, two skills, and fast mode, which reviews files on disk with a team's API key."
     }
   ]
 }

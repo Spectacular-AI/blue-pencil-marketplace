@@ -196,6 +196,26 @@ An argument that is missing or of the wrong type (no `format`, a spec sent as an
 refused before the tool runs, with the error flag set and a plain-text message naming the argument: fix
 that argument and call again.
 
+## Fast mode's table
+
+Fast mode's script prints a row per document, an `all` row with the totals, then a line naming where
+the key came from. A reviewed document's row is the headline's numbers and the path of its review's
+YAML, the same YAML `review` answers: read its failed and borderline checks there. A row with
+`error: <code>` was not reviewed:
+
+| Code | Means | Do |
+|---|---|---|
+| `spec_invalid`, `request_invalid`, `document_too_large`, `review_failed` | As in "Errors", above | As in "Errors" |
+| `plan_required` | The key's team plan lacks what the review asked for | Tell the user; review through `review` |
+| `scope_required` | The key lacks the `review` scope | Tell the user to make a key with it at https://slop-or-not.ai/keys |
+| `unauthorized` | The key is wrong or revoked | Tell the user; review through `review` |
+| `rate_limited` | Past the key's limit, after one retry | Wait a minute, then run the script again |
+| `old_server`, `no_answer`, `unreadable_answer` | The server could not give a review | Review through `review` |
+
+The script refuses before any review, and exits 2, when it finds no key, when the key is in a file git
+tracks, or when a path leads outside the project: review through `review`, and tell the user what it
+said.
+
 ## When the plan refuses
 
 The user's plan decides the tools. On **Basic** the server offers `review` alone, against the spec it
