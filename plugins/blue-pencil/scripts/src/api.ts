@@ -1,7 +1,10 @@
+import { parse } from 'yaml';
+
 // The Blue Pencil review route, `POST /api/review`, which does all the judging: the script only reads
 // files, sends their text and saves the answer (D54: script the transport, never the judgment). The
-// route answers the review as YAML when asked with `Accept: application/yaml`, the MCP `review` tool's
-// shape; its errors are JSON, `{error: {code, message, ...}}`.
+// route answers in the encoding `Accept` asks for, YAML (the MCP `review` tool's text) or JSON, the
+// same data; its query parameters `detail`, `outcomes` and `echo_spec` shape what the answer holds.
+// Its errors follow `Accept` too, `{error: {code, message, ...}}` in either encoding.
 
 /** The production site, the one the plugin's `.mcp.json` names too. */
 export const PRODUCTION_URL = 'https://slop-or-not.ai';
@@ -26,8 +29,17 @@ export function apiConfig(env: Record<string, string | undefined>): ApiConfig {
 /** What the request sends: the route's body, which takes no other key. */
 export type ReviewBody = { document: string; format: 'markdown'; spec?: unknown };
 
-/** A review's answer: its YAML, or an error with its code and a message to show. */
-export type Answer = { yaml: string } | { code: string; message: string };
+/** The encodings the route answers in. */
+export type Output = 'yaml' | 'json';
+
+/**
+ * How the answer is asked for: its encoding, and the route's query parameters, each sent only when
+ * given (`detail`, `outcomes`, `echo_spec`), their values already checked.
+ */
+export type AskOptions = { output: Output; query: Record<string, string> };
+
+/** A review's answer: its text, in the encoding asked for, or an error with its code and a message. */
+export type Answer = { text: string } | { code: string; message: string };
 
 /** One review can take a while on a long document. */
 const TIMEOUT_MS = 5 * 60 * 1000;
@@ -46,12 +58,15 @@ function reason(e: unknown): string {
   return String(e);
 }
 
-/** The route's error from a failed response: its code and message, or the status when it sent none. */
+/**
+ * The route's error from a failed response: its code and message, read as YAML, which reads JSON
+ * too, or the status when it sent none.
+ */
 async function errorOf(res: Response): Promise<Answer> {
   const text = await res.text().catch(() => '');
   let body: unknown;
   try {
-    body = JSON.parse(text);
+    body = parse(text);
   } catch {
     body = undefined;
   }
@@ -67,21 +82,38 @@ async function errorOf(res: Response): Promise<Answer> {
   };
 }
 
+/** The `Accept` value, the content type's test and the name of each encoding. */
+const MEDIA: Record<Output, { type: string; test: RegExp; name: string }> = {
+  yaml: { type: 'application/yaml', test: /yaml/i, name: 'YAML' },
+  json: { type: 'application/json', test: /json/i, name: 'JSON' },
+};
+
+/** The route's URL with the query parameters given, in the order given. */
+export function urlWith(url: string, query: Record<string, string>): string {
+  const pairs = Object.entries(query).map(
+    // The values are checked words and commas; a comma is left as it is, so the URL reads plainly.
+    ([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v).replace(/%2C/gi, ',')}`,
+  );
+  return pairs.length ? `${url}?${pairs.join('&')}` : url;
+}
+
 /** One review asked of the route, with the key as a bearer token. Never throws. */
 export async function askReview(
   fetch: Fetch,
   config: ApiConfig,
   key: string,
   body: ReviewBody,
+  options: AskOptions = { output: 'yaml', query: {} },
 ): Promise<Answer> {
+  const wanted = MEDIA[options.output];
   let res: Response;
   try {
-    res = await fetch(config.url, {
+    res = await fetch(urlWith(config.url, options.query), {
       method: 'POST',
       headers: {
         ...config.headers,
         authorization: `Bearer ${key}`,
-        accept: 'application/yaml',
+        accept: wanted.type,
         'content-type': 'application/json',
       },
       body: JSON.stringify(body),
@@ -95,16 +127,16 @@ export async function askReview(
   }
   if (!res.ok) return errorOf(res);
   const type = res.headers.get('content-type') ?? '';
-  if (/yaml/i.test(type)) return { yaml: await res.text() };
+  if (wanted.test.test(type)) return { text: await res.text() };
   await res.body?.cancel().catch(() => undefined);
-  if (/json/i.test(type))
+  // The other encoding: a deployment from before the route answered in the one asked for.
+  if (Object.values(MEDIA).some((m) => m.test.test(type)))
     return {
       code: 'old_server',
-      message:
-        'The server does not answer YAML yet: it is an older deployment. Review with the review MCP tool instead.',
+      message: `The server does not answer ${wanted.name} yet: it is an older deployment. Review with the review MCP tool instead.`,
     };
   return {
     code: 'unexpected_answer',
-    message: `The server answered ${type || 'without a content type'}, not YAML.`,
+    message: `The server answered ${type || 'without a content type'}, not ${wanted.name}.`,
   };
 }

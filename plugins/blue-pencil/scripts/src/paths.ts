@@ -1,5 +1,6 @@
 import { mkdir, realpath, stat } from 'node:fs/promises';
-import { isAbsolute, posix, relative, resolve, sep } from 'node:path';
+import { dirname, isAbsolute, join, posix, relative, resolve, sep } from 'node:path';
+import picomatch from 'picomatch';
 import { escapePath, glob, isDynamicPattern } from 'tinyglobby';
 
 // Every path the review script takes is resolved from the working directory and must stay inside one
@@ -98,4 +99,72 @@ export async function folderInside({ root, cwd }: Place, given: string): Promise
   const real = await realpath(abs);
   if (!within(root, real, true)) throw outside(given, root);
   return real;
+}
+
+/**
+ * The path's real place on disk, through the nearest folder above it that exists, so a folder that is
+ * not there yet (a file only the index holds) is placed where its parent's links lead.
+ */
+async function realPlace(abs: string): Promise<string> {
+  let dir = abs;
+  const below: string[] = [];
+  for (;;) {
+    try {
+      return join(await realpath(dir), ...below);
+    } catch {
+      const up = dirname(dir);
+      if (up === dir) return abs;
+      below.unshift(relative(up, dir));
+      dir = up;
+    }
+  }
+}
+
+/**
+ * The staged file at `given` (`--staged`): a path from the working directory or absolute, inside the
+ * root, that git's index holds (`index`, paths from the root). Its `abs` is where it is in the working
+ * tree, where its review is saved, refused when a link on disk leads that place outside the root.
+ */
+export async function stagedFileInside(
+  place: Place,
+  index: ReadonlySet<string>,
+  given: string,
+): Promise<Inside> {
+  const abs = resolve(place.cwd, given);
+  if (!within(place.root, abs)) throw outside(given, place.root);
+  const rel = toPosix(relative(place.root, abs));
+  if (!index.has(rel))
+    throw new PathError(
+      `"${given}" is not in git's index: stage it with git add, or review it without --staged.`,
+    );
+  if (!within(place.root, await realPlace(abs))) throw outside(given, place.root);
+  return { abs, rel };
+}
+
+/**
+ * The staged files the patterns name (`--staged`), as `filesInside` names files on disk: a pattern
+ * without glob characters is one path the index must hold; a glob is matched against the index's
+ * paths, its matches sorted, and refused when it matches none.
+ */
+export async function stagedFilesInside(
+  place: Place,
+  index: ReadonlySet<string>,
+  patterns: readonly string[],
+): Promise<Inside[]> {
+  const found = new Map<string, Inside>();
+  for (const pattern of patterns) {
+    const files: Inside[] = [];
+    if (!isDynamicPattern(pattern)) files.push(await stagedFileInside(place, index, pattern));
+    else {
+      const fromRoot = globFromRoot(place, pattern);
+      if (fromRoot === undefined) throw outside(pattern, place.root);
+      const isMatch = picomatch(fromRoot);
+      const matches = [...index].filter((rel) => isMatch(rel)).sort();
+      if (matches.length === 0) throw new PathError(`No staged file matches "${pattern}".`);
+      for (const rel of matches)
+        files.push(await stagedFileInside({ root: place.root, cwd: place.root }, index, rel));
+    }
+    for (const file of files) if (!found.has(file.rel)) found.set(file.rel, file);
+  }
+  return [...found.values()];
 }

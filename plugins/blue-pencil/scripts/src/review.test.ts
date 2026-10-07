@@ -1,9 +1,10 @@
 import { afterEach, beforeEach, describe, expect, test } from 'bun:test';
-import { mkdir, readFile, rm, stat, writeFile } from 'node:fs/promises';
+import { execFileSync } from 'node:child_process';
+import { mkdir, readFile, rm, stat, symlink, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { PRODUCTION_URL } from './api';
 import { type Deps, NO_KEY, RATE_LIMIT_WAIT_MS, review } from './review';
-import { gitInit, reviewYaml, tempDir } from './test-helpers';
+import { gitInit, reviewJson, reviewYaml, tempDir } from './test-helpers';
 
 // The script through its interface: a real project folder on disk (`base/project`, with
 // `base/secret.md` outside it), and a fake fetch that records each request and answers as the route
@@ -23,8 +24,16 @@ let respond: (call: Call) => Response | Promise<Response>;
 
 const yamlResponse = (text: string) =>
   new Response(text, { headers: { 'content-type': 'application/yaml; charset=utf-8' } });
+const jsonResponse = (text: string) =>
+  new Response(text, { headers: { 'content-type': 'application/json' } });
 const errorResponse = (status: number, code: string, message: string) =>
   Response.json({ error: { code, message } }, { status });
+/** An error as the route writes it when YAML was asked: its errors follow `Accept`. */
+const yamlErrorResponse = (status: number, code: string, message: string) =>
+  new Response(`error: {code: ${code}, message: "${message}"}\n`, {
+    status,
+    headers: { 'content-type': 'application/yaml; charset=utf-8' },
+  });
 
 const deps = (over: Partial<Deps> = {}): Deps => ({
   env: { BLUE_PENCIL_API_KEY: KEY },
@@ -185,7 +194,7 @@ describe('refused before any review, exit 2', () => {
 
   test('a spec that is not YAML, named', async () => {
     expect(await run(['good/a.md', '--spec', 'spec/broken.yaml'])).toBe(2);
-    expect(stderr).toStartWith('The spec spec/broken.yaml is not YAML: ');
+    expect(stderr).toStartWith('The spec spec/broken.yaml is not YAML or JSON: ');
     expect(calls).toEqual([]);
   });
 
@@ -274,5 +283,192 @@ describe('errors, a row each, exit 1', () => {
     expect(await run(['good/a.md'])).toBe(1);
     expect(await readFile(join(root, 'good', 'a.review.yaml'), 'utf8')).toBe('something: else\n');
     expect(stdout).toContain('| good/a.md | error: unreadable_answer |');
+  });
+});
+
+describe('--output json', () => {
+  beforeEach(() => {
+    respond = ({ body }) =>
+      jsonResponse(
+        String(body.document).startsWith('# A') ? reviewJson(5, 1, 2, 0.714) : reviewJson(4, 0, 0, 0.95),
+      );
+  });
+
+  test('asks for JSON, saves .review.json, and prints only JSON rows on stdout, the key on stderr', async () => {
+    expect(await run(['good/*.md', '--output', 'json'])).toBe(0);
+    for (const call of calls) expect(call.headers.accept).toBe('application/json');
+    expect(await readFile(join(root, 'good', 'a.review.json'), 'utf8')).toBe(reviewJson(5, 1, 2, 0.714));
+    await expect(stat(join(root, 'good', 'a.review.yaml'))).rejects.toThrow();
+    expect(JSON.parse(stdout)).toEqual([
+      { document: 'good/a.md', pass: false, score: 0.714, checks: 5, failed: 1, borderline: 2, review: 'good/a.review.json' },
+      { document: 'good/b.md', pass: true, score: 0.95, checks: 4, failed: 0, borderline: 0, review: 'good/b.review.json' },
+    ]);
+    expect(stderr).toBe('key from environment\n');
+  });
+
+  test('-o is its short form', async () => {
+    expect(await run(['good/a.md', '-o', 'json'])).toBe(0);
+    expect(calls[0]?.headers.accept).toBe('application/json');
+    expect(JSON.parse(stdout)).toHaveLength(1);
+  });
+
+  test('an error is a row with its code and message, still JSON alone on stdout, exit 1', async () => {
+    respond = ({ body }) =>
+      String(body.document).startsWith('# A')
+        ? errorResponse(422, 'spec_invalid', 'Not a spec.')
+        : jsonResponse(reviewJson(4, 0, 0, 0.95));
+    expect(await run(['good/*.md', '--output', 'json'])).toBe(1);
+    const rows = JSON.parse(stdout);
+    expect(rows[0]).toEqual({ document: 'good/a.md', error: 'spec_invalid', message: 'Not a spec.' });
+    expect(rows[1]).toMatchObject({ document: 'good/b.md', pass: true });
+    expect(stderr).toBe('key from environment\n');
+  });
+
+  test("a YAML 200 when JSON was asked is an older server's: an error row, nothing saved", async () => {
+    respond = () => yamlResponse(reviewYaml(4, 0, 0, 0.95));
+    expect(await run(['good/a.md', '--output', 'json'])).toBe(1);
+    expect(JSON.parse(stdout)[0]).toMatchObject({ document: 'good/a.md', error: 'old_server' });
+    await expect(stat(join(root, 'good', 'a.review.json'))).rejects.toThrow();
+  });
+});
+
+describe('the answer\'s settings, sent as query parameters only when given', () => {
+  test('--detail, --outcomes and --echo-spec', async () => {
+    const argv = ['good/a.md', '--detail', 'full', '--outcomes', 'fail, borderline', '--echo-spec', 'always'];
+    expect(await run(argv)).toBe(0);
+    expect(calls[0]?.url).toBe(`${PRODUCTION_URL}/api/review?detail=full&outcomes=fail,borderline&echo_spec=always`);
+  });
+
+  test('an empty --outcomes lists no check: outcomes= is sent', async () => {
+    expect(await run(['good/a.md', '--outcomes', ''])).toBe(0);
+    expect(calls[0]?.url).toBe(`${PRODUCTION_URL}/api/review?outcomes=`);
+  });
+
+  test('none given: no query at all, so the route keeps its defaults', async () => {
+    expect(await run(['good/a.md', '--output', 'yaml'])).toBe(0);
+    expect(calls[0]?.url).toBe(`${PRODUCTION_URL}/api/review`);
+    expect(calls[0]?.headers.accept).toBe('application/yaml');
+  });
+
+  test.each([
+    ['--output', 'xml', '--output takes yaml, json, not "xml".'],
+    ['--detail', 'short', '--detail takes compact, full, not "short".'],
+    ['--outcomes', 'fail,maybe', '--outcomes takes fail, borderline, pass, not "maybe".'],
+    ['--outcomes', 'fail,,pass', '--outcomes takes fail, borderline, pass, not "".'],
+    ['--echo-spec', 'yes', '--echo-spec takes auto, always, never, not "yes".'],
+  ])('a bad %s %s is refused before any review, exit 2', async (flag, value, message) => {
+    expect(await run(['good/a.md', flag, value])).toBe(2);
+    expect(stderr).toStartWith(`${message}\nUsage: node review.mjs`);
+    expect(calls).toEqual([]);
+  });
+});
+
+describe('--spec as JSON', () => {
+  test('a .json spec is read and sent as the same map', async () => {
+    await writeFile(join(root, 'spec', 'note.json'), '{"title": "Note", "parts": {"intro": {"required": true}}}\n');
+    expect(await run(['good/a.md', '--spec', 'spec/note.json'])).toBe(0);
+    expect(calls[0]?.body.spec).toEqual({ title: 'Note', parts: { intro: { required: true } } });
+  });
+});
+
+describe('errors in either encoding', () => {
+  test('a YAML error body gives its code and message', async () => {
+    respond = () => yamlErrorResponse(422, 'spec_invalid', 'children.intro.present is not a presence.');
+    expect(await run(['good/a.md'])).toBe(1);
+    expect(stdout).toContain('| good/a.md | error: spec_invalid |');
+    expect(stdout).toContain('good/a.md: children.intro.present is not a presence.');
+  });
+
+  test('a JSON error body gives its code and message', async () => {
+    respond = () => errorResponse(413, 'document_too_large', 'Too long.');
+    expect(await run(['good/a.md', '--output', 'json'])).toBe(1);
+    expect(JSON.parse(stdout)[0]).toEqual({ document: 'good/a.md', error: 'document_too_large', message: 'Too long.' });
+  });
+
+  test('unsupported_media_type says to update the plugin', async () => {
+    respond = () => yamlErrorResponse(415, 'unsupported_media_type', 'Send JSON or YAML.');
+    expect(await run(['good/a.md'])).toBe(1);
+    expect(stdout).toContain('| good/a.md | error: unsupported_media_type |');
+    expect(stdout).toContain('good/a.md: The server could not read the request: Send JSON or YAML. Update the plugin');
+  });
+});
+
+describe('--staged: what git\'s index holds, not the disk', () => {
+  const git = (...args: string[]) => execFileSync('git', args, { cwd: root });
+
+  test('sends the staged text, though the file on disk has changed since, and saves beside it', async () => {
+    gitInit(root, ['good/a.md']);
+    await writeFile(join(root, 'good', 'a.md'), '# A\n\nChanged on disk, not staged.\n');
+    expect(await run(['good/a.md', '--staged'])).toBe(0);
+    expect(calls.map((c) => c.body.document)).toEqual(['# A\n\nText a.\n']);
+    expect(await readFile(join(root, 'good', 'a.review.yaml'), 'utf8')).toBe(reviewYaml(5, 1, 2, 0.71));
+    expect(stdout).toContain('| good/a.md | false | 0.71 | 5 | 1 | 2 | good/a.review.yaml |');
+  });
+
+  test('a glob matches the index, not the disk: an unstaged file is left out, one gone from disk is in', async () => {
+    gitInit(root, ['good/a.md', 'spec/note.yaml']);
+    await writeFile(join(root, 'good', 'c.md'), '# C\n');
+    git('add', 'good/c.md');
+    await rm(join(root, 'good', 'c.md'));
+    expect(await run(['good/*.md', '--staged'])).toBe(0);
+    expect(byDocument(calls).map((c) => c.body.document)).toEqual(['# A\n\nText a.\n', '# C\n']);
+    expect(stdout).toContain('| good/c.md |');
+    expect(stdout).not.toContain('good/b.md');
+    expect(await readFile(join(root, 'good', 'c.review.yaml'), 'utf8')).toBe(reviewYaml(4, 0, 0, 0.95));
+  });
+
+  test('works from a folder below the root, its paths from there', async () => {
+    gitInit(root, ['good/a.md', 'good/b.md']);
+    expect(await run(['*.md', '--staged'], { cwd: join(root, 'good') })).toBe(0);
+    expect(calls).toHaveLength(2);
+    expect(stdout).toContain('| a.md | false | 0.71 | 5 | 1 | 2 | a.review.yaml |');
+  });
+
+  test('the spec is read from the index too', async () => {
+    gitInit(root, ['good/a.md', 'spec/note.yaml']);
+    await writeFile(join(root, 'spec', 'note.yaml'), 'title: [broken on disk\n');
+    expect(await run(['good/a.md', '--staged', '--spec', 'spec/note.yaml'])).toBe(0);
+    expect(calls[0]?.body.spec).toEqual({ title: 'Note', parts: { intro: { required: true } } });
+  });
+
+  test('a path the index does not hold is refused, exit 2, nothing sent', async () => {
+    gitInit(root, ['good/a.md']);
+    expect(await run(['good/a.md', 'good/b.md', '--staged'])).toBe(2);
+    expect(stderr).toBe('"good/b.md" is not in git\'s index: stage it with git add, or review it without --staged.\n');
+    expect(calls).toEqual([]);
+  });
+
+  test('a spec the index does not hold is refused', async () => {
+    gitInit(root, ['good/a.md']);
+    expect(await run(['good/a.md', '--staged', '--spec', 'spec/note.yaml'])).toBe(2);
+    expect(stderr).toContain('"spec/note.yaml" is not in git\'s index');
+    expect(calls).toEqual([]);
+  });
+
+  test('a glob that matches no staged file is refused', async () => {
+    gitInit(root, ['good/a.md']);
+    expect(await run(['spec/*.yaml', '--staged'])).toBe(2);
+    expect(stderr).toBe('No staged file matches "spec/*.yaml".\n');
+    expect(calls).toEqual([]);
+  });
+
+  test('a path outside the project, or a folder linked outside it, is refused', async () => {
+    gitInit(root, ['good/a.md']);
+    expect(await run(['../secret.md', '--staged'])).toBe(2);
+    expect(stderr).toContain('is outside the project folder');
+    // A staged file whose folder on disk is now a link out of the project: its review would land there.
+    await mkdir(join(base, 'elsewhere'));
+    await rm(join(root, 'good'), { recursive: true });
+    await symlink(join(base, 'elsewhere'), join(root, 'good'));
+    stderr = '';
+    expect(await run(['good/a.md', '--staged'])).toBe(2);
+    expect(stderr).toContain('"good/a.md" is outside the project folder');
+    expect(calls).toEqual([]);
+  });
+
+  test('outside a git repository it is refused', async () => {
+    expect(await run(['good/a.md', '--staged'])).toBe(2);
+    expect(stderr).toBe(`--staged reads git's index, and ${root} is not in a git repository.\n`);
+    expect(calls).toEqual([]);
   });
 });

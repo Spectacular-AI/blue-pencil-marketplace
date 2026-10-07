@@ -28,3 +28,12 @@ export const reviewYaml = (checks: number, failed: number, borderline: number, s
     '      present: "0.98; found 0.98, not found 0.02"',
     '',
   ].join('\n');
+
+/** The same review as JSON, the route's answer to `Accept: application/json`. */
+export const reviewJson = (checks: number, failed: number, borderline: number, score = 0.8) =>
+  JSON.stringify({
+    review: { pass: failed === 0, score, checks, failed, borderline, passed: checks - failed - borderline, ms: 12 },
+    strictness: { level: 'standard', fail: 0.4, pass: 0.8 },
+    metrics: { parts: { score, failed, borderline, passed: 1 } },
+    parts: { intro: { passed: { present: { value: 0.98, asked: [{ found: 0.98, 'not found': 0.02 }] } } } },
+  });

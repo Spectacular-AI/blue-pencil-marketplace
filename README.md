@@ -38,6 +38,8 @@ spec it teaches, the servers' tools or their answers change, the patch number fo
 In Claude Code, the agent can review a document where it lies instead of sending its text to the MCP
 server: a script in the plugin reads the file, asks for the review with a team's API key, saves the
 review beside the document and shows the agent a short table. It costs the agent far fewer tokens on
-a long document. Keys belong to a team on Enterprise. To turn it on, give the project the key as
-`BLUE_PENCIL_API_KEY`; `plugins/blue-pencil/INSTALL.md`, "Fast mode", says how. Without a key, the
-agent reviews through the MCP server as before.
+a long document. The script takes `--output yaml|json`, `--detail`, `--outcomes`, `--echo-spec` and
+`--staged`, which reviews what git's index holds, so it can also run as a project's pre-commit hook
+(`plugins/blue-pencil/scripts/README.md`). Keys belong to a team on Enterprise. To turn it on, give
+the project the key as `BLUE_PENCIL_API_KEY`; `plugins/blue-pencil/INSTALL.md`, "Fast mode", says
+how. Without a key, the agent reviews through the MCP server as before.
