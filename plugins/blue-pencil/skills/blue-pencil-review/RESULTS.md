@@ -189,7 +189,7 @@ where `title` and `description` go. When you sent a spec, it is not repeated.
 | `plan_required` | A spec was sent on Basic, whose reviews use the generated spec | "When the plan refuses", below |
 | `spec_invalid` | A field of the spec is wrong; `path` names it | Fix that field; `check_spec` finds these for free |
 | `request_invalid` | The call itself is malformed; `path` may name the argument | Fix the call |
-| `document_too_large` | The document is over the size limit; `limit` and `estimate` are in tokens | Review it in parts |
+| `document_too_large` | The document is over the size limit; `limit` and `estimate` are in tokens | Review it in parts, as [FRAGMENTS.md](FRAGMENTS.md) says |
 | `review_failed` | The review did not finish | Try once more |
 
 An argument that is missing or of the wrong type (no `format`, a spec sent as an object, not YAML text) is

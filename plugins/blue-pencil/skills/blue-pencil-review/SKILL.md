@@ -54,11 +54,13 @@ Done when every failed and every borderline check has its decision.
 ## 4. Revise, when the user wants the document fixed
 
 1. Change the document in the part each check names.
-2. Review again with the same spec, and decide again.
+2. Review again with the same spec, and decide again. When the document is long and you changed a few
+   of its sections, review just those sections against a cut of the spec, as
+   [FRAGMENTS.md](FRAGMENTS.md) says.
 
-Done when a review after your last edit has no failed check, or each check still failing is written
-down with why the text is right as written; and each check borderline on two reviews is named for the
-user.
+Done when a review of the whole document after your last edit has no failed check, or each check still
+failing is written down with why the text is right as written; and each check borderline on two
+reviews is named for the user.
 
 ## 5. Report
 
